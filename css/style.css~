@@ -1,0 +1,120 @@
+
+#side{
+    float: left;
+    width: 30%;
+    height: 100%;
+    
+}
+
+path {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.axis text{
+    font-family: sans-serif;
+    font-size: 11px;
+    text-decoration: none;
+    
+}
+
+.map-title{
+    max-width: 550px;
+}
+.main-title{
+    float: top;
+    /*position: absolute;*/
+    margin:0px;
+    clear: bottom;
+    top: 0px;
+}
+
+
+#list-dataset{
+    float: top;
+    padding: 5px;
+}
+
+#drop-downs{
+    background-color:#fff;
+    padding: 5px;
+}
+
+#header{
+    background-color:#fff;
+    padding: 5px;
+    float: top;
+    top : 5px;
+}
+#drawing{
+    padding: 10px;
+    clear: top;
+    float:left;
+    width: 70%;
+    
+}
+#example{
+    width: 300px;
+}
+
+.map{
+    float: left;
+}
+.map path{
+    stroke: #000;
+    stroke-width: .001px;
+}    
+.map text{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    text-anchor: middle;
+}
+
+.feature--county{
+    fill: #bbb;
+}
+.feature--con{
+    fill #bbb;
+}
+.feature--town{
+    fill: #f00;
+}
+.boundary{
+    stroke-width: none;
+    stroke: #eee;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+
+.grid .tick{
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+.grid path{
+    stroke-width: 0;
+}
+.collapsibleList li{
+  list-style-image:url('minus.png');
+  cursor:auto;
+}
+
+li.collapsibleListOpen{
+  list-style-image:url('minus.png');
+  cursor:pointer;
+}
+
+li.collapsibleListClosed{
+  list-style-image:url('plus.png');
+  cursor:pointer;
+}
