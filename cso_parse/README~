@@ -1,0 +1,14 @@
+pytho files to strip all the meta data out of a floder of
+json-stat files created for the CSO Irelands data.
+
+parse_meta.py
+create a file called meta a json with the file name as
+the key and all the names of all the fields. in the file.
+
+group_data.py
+groups the data into the field name as the key and
+a list containing all the files as a list
+creates a file with the dataset name as a key
+and the data set label as the value.
+
+
