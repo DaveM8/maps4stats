@@ -617,7 +617,7 @@ function make_y_axis(yScale, ticks=5){
 // create the side menu
 make_side();
 function make_side(){
-    //var link = '<a href='
+    //$("#message").reamove();
     var count = 0;
     var files = httpGetJson("json/geo_only.json");
     var set_names= httpGetJson("json/datasets.json");
@@ -630,6 +630,7 @@ function make_side(){
 	    $("#file-"+ count).append('<li class="click-bait" id="' +files[i][j]+ '">' + set_names[files[i][j]] + '</li>');
 	}
     }
+    
     CollapsibleLists.apply();
     
 }
@@ -786,7 +787,7 @@ function clean_region_names(geo_value){
     var clean_names = {};
     // adjust the names to match the osi files
     for(var key in geo_value){
-	console.log(key + " " + geo_value[key]);
+	//console.log(key + " " + geo_value[key]);
 	if (key == "Border, Midland and Western"){
 	    //not working dont draw use nuts2 map               
 	}
@@ -901,7 +902,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	data[key] = Math.log(data[key]+1);
     }
     var margin = {top: 20, right: 10, bottom: 20, left: 20},
-	width = 600 - margin.left - margin.right,
+	width = 700 - margin.left - margin.right,
 	height = 800 - margin.top - margin.bottom;
 
     var color = d3.scale.quantize()
