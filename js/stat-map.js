@@ -42,16 +42,16 @@ function create_lists(dss){
     // button to draw graphs by year
     $('#button-frame').append(createButton('by-year','Bar Chart', 'barTime'));
     $('#button-frame').append(createButton('scatter-by-year', "Line Plot", "scatterTime"));
-   // $('#button-frame').append(createButton('by-ed', 'ED', 'by_ed'));
     $('#button-frame').append(createButton('map-all-area', 'Map Data', 'get_data'));
     $('#button-frame').append(createButton('county-bar', 'County by Bar', 'countyBar'));
-     $('#button-frame').append(createButton('stat-bar', 'Bar', 'statBar'));
+    $('#button-frame').append(createButton('stat-bar', 'Bar', 'statBar'));
+   
     
     
 }
 
 function list_dataset(){
-    var dataset_list = httpGetJson("datasets.json");
+    var dataset_list = httpGetJson("json/datasets.json");
     $('#header').prepend(HTMLaddSelect.replace('%%data%%', "dataset"));
     for( i in dataset_list){
 	var option_box = HTMLaddOption.replace('%%value%%', i);
@@ -59,9 +59,7 @@ function list_dataset(){
 	$("#dataset").append(option_box.replace('%%text%%', String(dataset_list[i])));
     }
 }
-    
-
-
+   
 function createButton(id, text, action){
     var myButton = HTMLbutton.replace('%%data%%', id);
     myButton = myButton.replace('%%display%%', text);
@@ -128,7 +126,6 @@ function byCounty(){
 	    if( String(ids[i]) === String(names[j])){
 		geoName = ids[i];
 		geoIndex = i;
-		console.log(geoName);
 		found_flag = true;
 		break;
 	    }
@@ -141,7 +138,6 @@ function byCounty(){
     }
     var cube = [];
     $('#drop-downs :selected').each(function(i, selected){
-	//console.log(i, selected);
 	cube.push(parseInt(selected.value));
     });
     // TODO needs improving
@@ -202,12 +198,13 @@ function byStat(){
 
     //var time_var = String(ds.role.time);
     var stat =  String(ds.role.metric);
+    
     for(var i in ids){
 	if (ids[i] === stat){
 	    stat_index = i;
 	}
     }
-    
+
     var cube =[];
     $('#drop-downs :selected').each(function(i, selected){
 	cube.push(parseInt(selected.value));
@@ -217,24 +214,19 @@ function byStat(){
     var base = [];
     var stat_base = {};
     for(i =0; i<ds.Dimension(stat).length; i++){
-	//console.log(ds.Dimension(stat).Category(i));
 	cube[stat_index] = i;
-	//console.log(ds.Dimension(stat).Category(i).unit);
 	var unit = ds.Dimension(stat).Category(i).unit
-	//console.log(ds.Dimension(stat).Category(i).id)
-	console.log(unit["Base"])
 	stats.push(parseFloat(ds.Data(cube).value));
 	labels.push(ds.Dimension(stat).Category(i).label);
     }
+  
     
     var set = {};
     set["y"] = stats;
     set['x'] = labels;
     set['main'] = main;
     //set['unit'] = base;
-    //set["main"] =
-    for(i in set)
-	console.log(i + " : " + set[i])
+    //set["main"] = 
     return set;
 }
 
@@ -242,7 +234,6 @@ function byTime(){
     // select the data foe each time peiroid for all selected options
 
     var ids = ds.id;
-    //console.log(ids)
     var yearIndex = null;
     var statIndex = null;
     
@@ -305,7 +296,6 @@ function byTime(){
     set["ylab"] = ylab;
     set["xlab"] = xlab;
     set["role"] = role;
-    //set["colour"] = 
     return set;
 }
 
@@ -422,12 +412,10 @@ $("#info-map").on('change', function(){
 });
 		  
 $("#dataset").on('change', function(){
-    //console.log("on.change");
     new_data_set("#dataset");
 });
 //////////////////////////
 function new_data_set(change_id){
-    console.log(change_id);
     var base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
     $(change_id + ' :selected').each(function(i, selected){
 	dataset_name = $(change_id).val();
@@ -438,7 +426,6 @@ function new_data_set(change_id){
 	create_lists(ds);
     });
 }
-
 function load_data(dataset_name){
     // take a cso file ref AA045 and load the file
     var base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
@@ -451,7 +438,7 @@ function load_data(dataset_name){
 
 function getNames(examples){
     // load datasets.json and look up the names
-    datasets = httpGetJson("datasets.json");
+    datasets = httpGetJson("json/datasets.json");
     with_names = {};
     for(var i=0; i<examples.length; ++i){
 	with_names[examples[i]] = datasets[examples[i]];
@@ -487,7 +474,7 @@ function getjsonStat(url){
     if(url == undefined){
 	
 	var cso_base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
-	return JSONstat(cso_base + "CD725");
+	return JSONstat(cso_base + "CDD01");
     }
     else {
 	// load the dataset in the url we have been passed
@@ -532,7 +519,7 @@ function simple_line(data){
     $(currentDiv).append(HTMLgraphTitle.replace("%%main%%", data.main));
 
     var margin = {top: 30, right: 20, bottom: 100, left: 100},
-	width = 1000 - margin.left - margin.right,
+	width = 800 - margin.left - margin.right,
 	height = 330 - margin.top - margin.bottom;
     // format for monthly cso statistics
     var format = what_format(data.role);
@@ -560,7 +547,6 @@ function simple_line(data){
 	data_line.push(parse_x);
 	data_line.push(data.y[i]);
 	my_data.push(data_line);
-	//console.log(data_line);
     }
     
     var xAxis = d3.svg.axis()
@@ -634,42 +620,35 @@ function make_y_axis(yScale, ticks=5){
 // create the side menu
 make_side();
 function make_side(){
-    //var link = '<a href='
-    var stat_json = httpGetJson("statstic.json");
-    var stat_list = stat_json["Statstic"];
-    var l = stat_list.length;
-    console.log(l);
-    var stat_index = [];
-    for (var k=0; k<12; ++k){
-	stat_index.push(Math.floor(Math.random()*l));
+    //var stat_json = httpGetJson("json/statstic.json");
+    //var stat_list = stat_json["Statstic"];
+    //var l = stat_list.length;
+    //var stat_index = [];
+    //for (var k=0; k<12; ++k){
 	
-	//console.log("rand " + rand_index);
-    }
+//	stat_index.push(Math.floor(Math.random()*l));
+//    }
     var count = 0;
-    var files = httpGetJson("geo_only.json");
-    var set_names= httpGetJson("datasets.json");
+    var files = httpGetJson("json/geo_only.json");
+    var set_names= httpGetJson("json/datasets.json");
     $("#side").append('<ul id="side-files" class="collapsibleList"></ul>');
-    $("#side-files").append('<li>Statstic<ul class="collapsibleList" id="statstic"></ul></li>');
-    for (k=0; k<stat_index.length; ++k){
-	console.log("k "+k);
-	console.log("stat_list[k] " +stat_list[k]);
-	$("#statstic").append('<li class="click-bar" id="' +stat_list[k]+ '">' + set_names[stat_list[k]] + '</li>');
-    }
+    //$("#side-files").append('<li>Statstic<ul class="collapsibleList" id="statstic"></ul></li>');
+    //for (k=0; k<stat_index.length; ++k){
+//	$("#statstic").append('<li class="click-bar" id="' +stat_list[stat_index[k]]+ '">' + set_names[stat_list[stat_index[k]]] + '</li>');
+  //  }
     for(var i in files){
-	console.log("i :" + i);
 	count += 1;
 	$("#side-files").append('<li>' + i + '<ul class="collapsibleList" id="file-'+ count + '"></ul></li>');
 	for(var j=0; j<files[i].length; j++){
 	    $("#file-"+ count).append('<li class="click-bait" id="' +files[i][j]+ '">' + set_names[files[i][j]] + '</li>');
 	}
     }
+    
     CollapsibleLists.apply();
     
 }
 
 $('.click-bait').click( function() {
-    //console.log($(this));
-    //console.log($(this).attr('id'));
     load_data($(this).attr('id'));
     get_data();
     return false;
@@ -726,7 +705,6 @@ function get_data(){
 	    if( String(ids[i]) === String(names[j])){
 		geoName = ids[i];
 		geoIndex = i;
-		console.log(geoName);
 		found_flag = true;
 		break;
 	    }
@@ -740,7 +718,6 @@ function get_data(){
     
     var cube = [];
     $('#drop-downs :selected').each(function(i, selected){
-	//console.log(i, selected);
 	cube.push(parseInt(selected.value));
 	if (i !== geoIndex)
 	    labels.push(selected.text);
@@ -752,7 +729,6 @@ function get_data(){
 	var current = ds.Dimension(geoName).Category(i).label;
 	
 	try{
-	    console.log(current + " " + ds.Data(cube).value);
 	    geo_value[current] = parseFloat(ds.Data(cube).value); 
 	}catch(err){
 	    console.log("Error " + current + " " + cube);
@@ -763,9 +739,8 @@ function get_data(){
     switch(geoName){
     case "Constituency":{
 	// leave out for now because of problems
-	// draw a map on Constituency boundrays
-	console.log("Constituency");
-	draw_all_map(geo_value, "maps/cons.json", "NAME", labels);
+	// draw a map on Constituency boundra
+	// Not doing the Constituencys I could not get the maps to displa
 	break;
     }
     case "Towns by Size":{
@@ -773,24 +748,23 @@ function get_data(){
 	break;
     }
     case "Garda Region":{
-	console.log(geoName);
-	draw_all_map(geo_value, main, "maps/garda_regions.json", "REGION", labels);
+	draw_all_map(geo_value, main, "json/garda_regions.json", "REGION", labels);
 	break;
     }
     case "Garda Division":{
 	clean_names = {};
-	var garda_division_names =  httpGetJson("garda_divisions_names.json");
+	var garda_division_names =  httpGetJson("json/garda_divisions_names.json");
 	for(var key in geo_value){
 	    clean_names[garda_division_names[key]] = geo_value[key];
 	}
-	draw_all_map(clean_names, main, "maps/garda_districts.json",  "DIVISION", labels);
+	draw_all_map(clean_names, main, "json/garda_districts.json",  "DIVISION", labels);
 	break;
     }
     
     case "Regional Authority":
     case "Region":{
 	var clean_names = clean_region_names(geo_value);
-	draw_all_map(clean_names, main, "maps/nuts_pretty.json", "NUTS3NAME", labels);
+	draw_all_map(clean_names, main, "json/nuts_pretty.json", "NUTS3NAME", labels);
 	break;
     }
     case "County":
@@ -801,25 +775,25 @@ function get_data(){
 	{
 	    clean_names = clean_county_name(geo_value);
 
-	    draw_all_map(clean_names, main, "maps/ireland_topo_pretty.json", "id", labels);
+	    draw_all_map(clean_names, main, "json/ireland_topo_pretty.json", "id", labels);
 	    break;
 	}
 	
     case "County and Region":
 	{
 	    clean_names = clean_region_names(geo_value);
-	    draw_all_map(clean_names, main, "maps/nuts_pretty.json", "NUTS3NAME", labels);
+	    draw_all_map(clean_names, main, "json/nuts_pretty.json", "NUTS3NAME", labels);
 	    clean_names = clean_county_name(geo_value);
-	    draw_all_map(clean_names, main, "maps/ireland_topo_pretty.json", "id", labels);
+	    draw_all_map(clean_names, main, "json/ireland_topo_pretty.json", "id", labels);
 	    break;
 
 	}
     case "Province County or City":
     case "Place of Usual Residence":
     case "Province or County":{
-	draw_all_map(geo_value, main, "maps/province.json", "PROVNAME", labels);
+	draw_all_map(geo_value, main, "json/province.json", "PROVNAME", labels);
 	clean_names = clean_county_name(geo_value);
-	draw_all_map(clean_names, main, "maps/ireland_topo_pretty.json", "id", labels);
+	draw_all_map(clean_names, main, "json/ireland_topo_pretty.json", "id", labels);
 	break;
     }
     }
@@ -832,24 +806,31 @@ function clean_region_names(geo_value){
     for(var key in geo_value){
 	if (key == "Border, Midland and Western"){
 	    //not working dont draw use nuts2 map               
-	    //draw_all_map(geo_value, main, "maps/nuts2_new.json","NUTS2NAME");
 	}
 	switch(key){
 	case "Dublin plus Mid East":{
 	    clean_names["Dublin"] = geo_value[key];
 	    clean_names["Mid-East"] = geo_value[key];
+	    break;
 	}
 	case "Midlands & East":{
 	    clean_names["Dublin"] = geo_value[key];
 	    clean_names['Mid-East'] = geo_value[key];
 	    clean_names['Midland'] = geo_value[key];
+	    break;
 	}
 	case "West":{
 	    clean_names["Mid-West"] = geo_value[key];
 	    clean_names["West"] = geo_value[key];
+	    break;
+	}
+	case "Western Region":{
+	    clean_names["West"];
+	    break;
 	}
 	case "North West":{
 	    clean_names["Border"] = geo_value[key];
+	    break;
 	}
 		
 	case "South East":{
@@ -933,14 +914,14 @@ function draw_all_map(data, main, map_file, area_id, labels){
     // 	      and the value to map as value
     //     
 
-    //for(var key in data){
-	//data[key] = Math.log(data[key]+1);
-    //}
+    for(var key in data){
+	data[key] = Math.log(data[key]+1);
+    }
     var margin = {top: 20, right: 10, bottom: 20, left: 20},
-	width = 600 - margin.left - margin.right,
+	width = 700 - margin.left - margin.right,
 	height = 800 - margin.top - margin.bottom;
 
-    var color = d3.scale.log()
+    var color = d3.scale.quantize()
 	.range(["rgb(237,248,233)", "rgb(186,228,179)",
 		"rgb(116,196,118)", "rgb(49,163,84)","rgb(0,109,44)"]);
     
@@ -959,7 +940,6 @@ function draw_all_map(data, main, map_file, area_id, labels){
     var mapid = "map-" + nextDiv.substring(1);
     
     // put a map div to select maps for css
-    //console.log(mapid + " " + nextDiv);
     $(nextDiv).append('<div id=' + mapid + ' class="map"></div>');
     $(nextDiv).prepend(HTMLmapTitle.replace("%%main%%", main));
 
@@ -968,7 +948,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	.attr("height", height + margin.top + margin.bottom);
     var g = svg.append("g");
     var min_max = [];
-    console.log("Drawing Map");
+
     d3.json(map_file, function(error, geo_data){
 	var area = topojson.feature(geo_data, geo_data.objects.geo_area);
 	// put the values for each region into the topojson
@@ -976,7 +956,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	for(var k in geoms){
 	   min_max.push(parseFloat(data[geoms[k].properties[area_id]]));
 	    geoms[k].properties.value = data[geoms[k].properties[area_id]];
-	    console.log(geoms[k].properties[area_id] + " " + data[geoms[k].properties[area_id]]);
+
 	}
 	color.domain([d3.min(min_max), d3.max(min_max)]);
 	var text_color = null;
@@ -989,9 +969,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
             .attr("d", path)
 	    .style("fill", function(d){
 		// Get data value
-		//console.log(d.properties['value']);
 		var value = d.properties['value'];
-		//console.log("value " + value);
 		if(value){
 		    // the value exsits
 		    return color(value);
@@ -1028,68 +1006,4 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	    .text(myStr);
 
     });
-}
-
-function ed_data(){
-    // get the data for an ed map
-    var index_name = "Towns by Electoral Division";
-    var geoName = null;
-    var geoIndex = null;
-    var stat = String(ds.role.metric);
-    var ids = ds.id;
-    var main = String(ds.label); // title of graph to be drawen
-    var time = String(ds.role.time); // the time peirod of the data
-    //var xlab = role; // xlabel of graph to be drawen
-    var ylab = String(ds.role.metric.label); // ylabel of graph to be drawen
-    var statIndex = null;
-    var found_flag = false;
-    var labels = [];
-    
-    for(var i=0; i<ids.length; ++i){
-	if (ids[i] == stat){
-	    statIndex = i;
-	}
-	if(ids[i] === index_name){
-	    geoName = ids[i];
-	    geoIndex = i;
-	    console.log(geoName);
-	    found_flag = true;
-	}
-	
-    }
-    if (!found_flag){
-	alert("No Geographical Data in set");
-	return false;
-    }
-    console.log(geoName);
-    console.log(stat);
-    
-    var cube = [];
-    $('#drop-downs :selected').each(function(i, selected){
-	//console.log(i, selected);
-	cube.push(parseInt(selected.value));
-	if (i !== geoIndex)
-	    labels.push(selected.text);
-    });
-    var indexs = []
-    var geo_value = {};
-    for(i=0; i<ds.Dimension(geoName).length; ++i){
-	cube[geoIndex] = i;
-	indexs.push(ds.Dimension(geoName).Category(i).index);
-	var current = ds.Dimension(geoName).Category(i).label;
-	
-	try{
-	    //console.log(current + " " + ds.Data(cube).value);
-	    //geo_value[current] = parseFloat(ds.Data(cube).value); 
-	}catch(err){
-	    //console.log("Error " + current + " " + cube);
-	}
-	
-    }
-
-}
-function by_ed(){
-    load_data("B0105");
-    data = ed_data();
-    //draw_all_map();
 }
