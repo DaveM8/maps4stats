@@ -105,7 +105,7 @@ function byCounty(){
 		  "Location of Place of Work","County and City",
 		  "Area of Residence of Bride","County of",
 		  "County of Usual Residence","County",
-		  "Towns by Size", "Region" ];
+		  "Towns by Size", "Region", "Local Authority" ];
     
     var geoName = null;
     var geoIndex = null;
@@ -427,7 +427,7 @@ function new_data_set(change_id){
     });
 }
 function load_data(dataset_name){
-    // take a cso file ref AA045 and load the file
+    // take a cso file ref eg AA045 and load the file
     var base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
     ds = getjsonStat(base + dataset_name);
     ds = ds.Dataset(0);
@@ -518,7 +518,7 @@ function simple_line(data){
     var currentDiv = "#graph-id" + String(graphCounter);
     $(currentDiv).append(HTMLgraphTitle.replace("%%main%%", data.main));
 
-    var margin = {top: 30, right: 20, bottom: 100, left: 100},
+    var margin = {top: 30, right: 20, bottom: 50, left: 100},
 	width = 800 - margin.left - margin.right,
 	height = 330 - margin.top - margin.bottom;
     // format for monthly cso statistics
@@ -542,12 +542,17 @@ function simple_line(data){
     
     var my_data = [];
     for(i=0; i<data.x.length; ++i){
-	data_line = [];
+	var data_line = [];
 	var parse_x = parseDate(String(data.x[i]));
 	data_line.push(parse_x);
 	data_line.push(data.y[i]);
 	my_data.push(data_line);
+	//console.log(data_line)
     }
+    console.log(my_data)
+    //for(var i =0; i<my_data.length; ++i){
+	//console.log(my_data[i]);
+    //}
     
     var xAxis = d3.svg.axis()
 	.scale(xScale)
@@ -629,14 +634,45 @@ function make_side(){
 //	stat_index.push(Math.floor(Math.random()*l));
 //    }
     var count = 0;
-    var files = httpGetJson("json/geo_only.json");
-    var set_names= httpGetJson("json/datasets.json");
+    var geo = httpGetJson("json/geo_only.json");
+    var files = httpGetJson("json/files.json")
+
     $("#side").append('<ul id="side-files" class="collapsibleList"></ul>');
     //$("#side-files").append('<li>Statstic<ul class="collapsibleList" id="statstic"></ul></li>');
     //for (k=0; k<stat_index.length; ++k){
 //	$("#statstic").append('<li class="click-bar" id="' +stat_list[stat_index[k]]+ '">' + set_names[stat_list[stat_index[k]]] + '</li>');
-  //  }
+    //  }
+    //one_side_section(geo);
+    side_by_base();
+    //one_side_section(files);
+    CollapsibleLists.apply();
+    
+}
+function side_by_base(){
+    // create a side bar showing the datasets by unit
+    // this will create a line chart with many lines on it 
+    var set_names= httpGetJson("json/datasets.json");
+    var stat_by_set = httpGetJson("json/stat_by_set.json");
+    var unit_by_set = httpGetJson("json/unit_by_stat.json");
+    var id_counter = 0;
+
+    for(var i in unit_by_set){
+	id_counter += 1;
+	$("#side-files").append('<li>' + i + '<ul class="collapsibleList" id="side-by-unit-'+ id_counter + '"></ul></li>');
+	for(var j=0; j<unit_by_set[i].length; j++){
+	    //console.log(unit_by_set[i][j]);
+	    $("#side-by-unit-"+id_counter).append('<li class="click-unit" id="' +
+						  unit_by_set[i][j] +
+						  '">' + set_names[stat_by_set[unit_by_set[i][j]]] + '</li>');
+	}
+	
+    }
+}
+function one_side_section(files){
+    var set_names= httpGetJson("json/datasets.json");
+    var count = 0;
     for(var i in files){
+	//console.log(i)
 	count += 1;
 	$("#side-files").append('<li>' + i + '<ul class="collapsibleList" id="file-'+ count + '"></ul></li>');
 	for(var j=0; j<files[i].length; j++){
@@ -644,10 +680,14 @@ function make_side(){
 	}
     }
     
-    CollapsibleLists.apply();
-    
 }
-
+$('.click-unit').click( function(){
+    var stat_by_set = httpGetJson("json/stat_by_set.json");
+    load_data(stat_by_set[$(this).attr('id')]);
+    stat_by_time($(this).attr('id'));
+    return false;
+});
+   
 $('.click-bait').click( function() {
     load_data($(this).attr('id'));
     get_data();
@@ -675,6 +715,7 @@ function get_data(){
     // county; provence; region; townland; garda region
 
     // used to find the geo field in the dataset
+    // TODO deal with Local Authority edge case
      var names = ["Province or County", "Constituency",
 		  "Province County or City", "Garda Region",
 		  "Regional Authority", "County and Region",
@@ -683,7 +724,7 @@ function get_data(){
 		  "Area of Residence of Bride","County of",
 		  "County of Usual Residence","County",
 		  "Towns by Size", "Region", "Regional Authority",
-		  "Garda Division"];
+		  "Garda Division", "Local Authority"];
     
     var geoName = null;
     var geoIndex = null;
@@ -825,7 +866,7 @@ function clean_region_names(geo_value){
 	    break;
 	}
 	case "Western Region":{
-	    clean_names["West"];
+	    clean_names["West"] = geo_value[key];
 	    break;
 	}
 	case "North West":{
@@ -1007,3 +1048,228 @@ function draw_all_map(data, main, map_file, area_id, labels){
 
     });
 }
+
+function get_set_code(stat_code){
+    // take a Statistic code and return the data set
+    var stat_by_set = httpGetJson("json/stat_by_set.json");
+    var set_code = stat_by_set[stat_code];
+    var base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
+    return getjsonStat(base+set_code);
+}
+
+stat_by_time("AJA01C1");
+//stat_by_time("THA16C1");
+function stat_by_time(stat_code){
+    // create a json of time series data for each Statistic
+    // grab a single Statistic out of a dataset
+    // return a structure suitiable for dring a line chart with
+    // a line for each dimension
+    var dataset = get_set_code(stat_code);
+    dataset = dataset.Dataset(0);
+
+    // get the index of the Statistic and time 
+    var ids = dataset.id;
+    var stat_index = null;
+    var stat = String(dataset.role.metric);
+    var time = String(dataset.role.time);
+    var time_index = null;
+    // max min need to scale the graph
+    var max = null;
+    var min = null;
+    //var num_var = dataset.length;
+    for(var i in ids){
+	if(ids[i] === stat){
+	    stat_index = parseInt(i);
+	}
+	if (ids[i] === time){
+	    time_index = parseInt(i);
+	}
+    }
+    var stat_code_index = dataset.Dimension(stat_index).Category(stat_code).index;
+    var stat_label = dataset.Dimension(stat_index).Category(stat_code).label;
+    var stat_base = dataset.Dimension(stat_index).Category(stat_code).unit.Base;
+    
+    var cube = [];
+    for (var j=0; j<ids.length; ++j){
+	cube.push(0);
+    }
+    cube[stat_index] = stat_code_index; 
+
+    var stat_time = {};
+    var years = [];
+    // get the years
+    for(var j=0; j<dataset.Dimension(time_index).length; ++j){
+	years.push(dataset.Dimension(time_index).Category(j).label);
+    }
+    var data = {};
+    stat_time.data = data;
+    stat_time["time_base"] = time;
+    stat_time["time"] = years;
+    stat_time['label'] = stat_label;
+    stat_time['base'] = stat_base;
+    for(i=0; i<ids.length; ++i){
+	// go throught all var except stat and time
+	if(i === time_index || i === stat_index)
+	    continue;
+	// for each dimension which is not time or statistic
+	for(var k=0; k<dataset.Dimension(i).length; ++k){
+	    var current = [];
+	    cube[i] = k;
+	    var current_label = dataset.Dimension(i).Category(k).label;
+	    // for each time peirod of ach dimension
+	    for(var j=0; j<dataset.Dimension(time_index).length; ++j){
+		// create an array for all vars by time
+		cube[time_index] = j;
+		if(max){
+		    if(parseInt(dataset.Data(cube).value) > max){
+			max = parseInt(dataset.Data(cube).value);
+		    }
+		} else{   
+		    max = parseInt(dataset.Data(cube).value);
+		}
+		if(min){
+		    if (parseInt(dataset.Data(cube).value) < min){
+			min = parseInt(dataset.Data(cube).value);
+		    }
+		} else{
+		    min = parseInt(dataset.Data(cube).value);
+		}
+		current.push(dataset.Data(cube).value);
+	    }
+	    //stat_time[current_label] = current;
+	    stat_time['data'][current_label] = current;
+	   // break;
+	}
+	
+    }
+    stat_time.max = max;
+    stat_time.min = min;
+    console.log("max " + max + " min " + min);
+    for (var key in stat_time.data){
+	console.log(key + " " + stat_time.data[key].length);
+    }
+    time_stat(stat_time);
+    //return stat_time;
+    
+}
+
+function time_stat(json_data){
+    // take a json file with time seiries data and
+    // draw all of the vairibles on a line chart
+    if(json_data["time"].length < 2){
+	alert("Data not time series");
+	return -1;
+    }
+    // extended from simple_line()
+    graphCounter += 1;
+    // grab the #drawing section and add a new div for this graph
+    $("#drawing").prepend(HTMLgraphDiv.replace('%%data%%', graphCounter));
+    var currentDiv = "#graph-id" + String(graphCounter);
+    $(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
+
+    var margin = {top: 30, right: 20, bottom: 50, left: 100},
+	width = 800 - margin.left - margin.right,
+	height = 330 - margin.top - margin.bottom;
+    // format for monthly cso statistics
+    var format = what_format(json_data.time_base);
+    console.log(format)
+    var parseDate = d3.time.format(format).parse;
+
+    var xScale = d3.time.scale().range([0, width]);
+    var yScale = d3.scale.linear().range([height, 0]);
+    
+    var valueline = d3.svg.line()
+	.x(function(d) { return xScale(d[0]); })
+	.y(function(d) { return yScale(d[1]); });
+    
+    var svg = d3.select(currentDiv)
+	.append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform",
+	      "translate(" + margin.left + "," + margin.top + ")");
+    
+    
+    var xAxis = d3.svg.axis()
+	.scale(xScale)
+	.tickFormat(d3.time.format(format))
+	.orient("bottom").ticks(10);
+    
+    var yAxis = d3.svg.axis()
+	.scale(yScale)
+	.tickFormat(d3.format("s"))
+	.orient("left").ticks(5);
+
+    // Scale the range of the data
+    //console.log(d3.extent(json_data.time));
+    xScale.domain(d3.extent(json_data.time));
+    var min_scale = 0;
+    if (json_data.min < 0)
+	min_scale = json_data.min;
+    yScale.domain([min_scale, json_data.max]);
+
+    svg.append("text")
+	.attr("x", (width/2))
+	.attr("y", 0- (margin.top /2))
+	.attr("class", "line-chart-title")
+	.attr("text-anchor", "middle")
+	.attr("font-size", "16px")
+	.style("text-decoration", "underline")
+	.text(json_data.label);
+
+    
+    // x-axis label
+    svg.append("text")
+	.attr("transform",
+	      "translate(" + (width/2) + "," +
+	      (height+margin.bottom)+ ")")
+	.style("text-anchor", "middle")
+	.text(json_data.time_base);
+
+    // y-axis label
+    svg.append("text")
+	.attr("transform", "rotate(-90)")
+	.attr("y", 0-margin.left)
+	.attr("x", 0-(height))
+	.attr("dy", "1em")
+	.style("test-anchor", "middle")
+	.text(json_data.base);
+
+    var colour = d3.scale.category20();
+    var c = 0;
+    for(var key in json_data.data){
+	// for each data array in json_data.data
+	// create a 2d array format [[time, value], [time, value]...]
+	// pass this to svg.path to draw the line 
+	var line_data =[];
+	for(var i=0; i<json_data.data[key].length; ++i){
+	    //console.log(json_data.time[i])
+	    var parse_x = parseDate(String(json_data.time[i]));
+	    
+	    //console.log(parse_x);
+	    //console.log([parseDate(String(json_data.time[i])), json_data.data[key][i]]);
+	    //line_data.push(parse_x)
+	    //line_data.push(json_data.data[key][i])
+	    line_data.push([parse_x, json_data.data[key][i]]);
+	    
+	}
+	console.log(line_data)
+	svg.append("path")
+	    .attr("class", "line")
+	    .style("stroke", function(){
+		return colour(c);})
+	    .attr("d", valueline(line_data));
+	c+=1;
+    }
+    svg.append("g") // Add the X Axis
+	.attr("class", "x axis")
+	.attr("transform", "translate(0," + height + ")")
+	.call(xAxis);
+        
+    svg.append("g")
+	.attr("class", "y axis")
+	.call(yAxis);
+
+}
+
