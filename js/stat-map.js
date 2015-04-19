@@ -1,5 +1,6 @@
 // stat-map.js a javascript for visualising json-stat data
 // using d3.js
+// copyright David Morrisroe 2015
 
 // used to give an id to each graph we draw
 var graphCounter=0;
@@ -30,7 +31,7 @@ function create_lists(dss){
 	    
 	    var option_box = HTMLaddOption.replace('%%value%%', i);
 	    option_box = option_box.replace('%%id%%', select_id);
-	    $(select_now).append(option_box.replace('%%text%%', text));
+v	    $(select_now).append(option_box.replace('%%text%%', text));
 	}
 	
     }
@@ -1190,10 +1191,24 @@ function time_stat(json_data){
 	.attr("transform",
 	      "translate(" + margin.left + "," + margin.top + ")");
     
-    
+     // Scale the range of the data
+    var time_scale = d3.extent(json_data.time);
+    // convert the max min to Date types befor using in the domain
+    time_scale[0] = parseDate((String(time_scale[0])));
+    time_scale[1] = parseDate((String(time_scale[1])));
+    xScale.domain(time_scale);
+    // if the minimum value is positve start the y axis at 0
+    // if the minimum is less than 0 start the there
+    // TODO draw a light line at 0 if the axis is below 0
+    var min_scale = 0;
+    if (json_data.min < 0)
+	min_scale = json_data.min;
+    yScale.domain([min_scale, json_data.max]);
+   
     var xAxis = d3.svg.axis()
 	.scale(xScale)
 	.tickFormat(d3.time.format(format))
+        //.tickFormat("")    
 	.orient("bottom").ticks(10);
     
     var yAxis = d3.svg.axis()
@@ -1201,13 +1216,6 @@ function time_stat(json_data){
 	.tickFormat(d3.format("s"))
 	.orient("left").ticks(5);
 
-    // Scale the range of the data
-    //console.log(d3.extent(json_data.time));
-    xScale.domain(d3.extent(json_data.time));
-    var min_scale = 0;
-    if (json_data.min < 0)
-	min_scale = json_data.min;
-    yScale.domain([min_scale, json_data.max]);
 
     svg.append("text")
 	.attr("x", (width/2))
@@ -1244,17 +1252,10 @@ function time_stat(json_data){
 	// pass this to svg.path to draw the line 
 	var line_data =[];
 	for(var i=0; i<json_data.data[key].length; ++i){
-	    //console.log(json_data.time[i])
 	    var parse_x = parseDate(String(json_data.time[i]));
-	    
-	    //console.log(parse_x);
-	    //console.log([parseDate(String(json_data.time[i])), json_data.data[key][i]]);
-	    //line_data.push(parse_x)
-	    //line_data.push(json_data.data[key][i])
 	    line_data.push([parse_x, json_data.data[key][i]]);
 	    
 	}
-	console.log(line_data)
 	svg.append("path")
 	    .attr("class", "line")
 	    .style("stroke", function(){
@@ -1262,6 +1263,7 @@ function time_stat(json_data){
 	    .attr("d", valueline(line_data));
 	c+=1;
     }
+    
     svg.append("g") // Add the X Axis
 	.attr("class", "x axis")
 	.attr("transform", "translate(0," + height + ")")
