@@ -31,7 +31,7 @@ function create_lists(dss){
 	    
 	    var option_box = HTMLaddOption.replace('%%value%%', i);
 	    option_box = option_box.replace('%%id%%', select_id);
-v	    $(select_now).append(option_box.replace('%%text%%', text));
+	    $(select_now).append(option_box.replace('%%text%%', text));
 	}
 	
     }
@@ -506,9 +506,11 @@ function what_format(role){
 
     if(role == "Month"){
 	return "%YM%M";
-    }
-    else{
-	return "%Y"
+    }else if(role === "Quarter"){
+	//TODO fix very hacky treating 1234 as the first 4 months of the year
+	return "%YQ%m";
+    }else{
+	return "%Y";
     }
 }
 function simple_line(data){
@@ -685,18 +687,21 @@ function one_side_section(files){
 $('.click-unit').click( function(){
     var stat_by_set = httpGetJson("json/stat_by_set.json");
     load_data(stat_by_set[$(this).attr('id')]);
+    console.log("current set " + stat_by_set[$(this).attr('id')]);
     stat_by_time($(this).attr('id'));
     return false;
 });
    
 $('.click-bait').click( function() {
     load_data($(this).attr('id'));
+    console.log("current_set " + $(this).attr('id'));
     get_data();
     return false;
 });
 
 $('.click-bar').click( function() {
     load_data($(this).attr('id'));
+    console.log("current_set " + $(this).attr('id'));
     statBar();
     return false;
 });
@@ -725,7 +730,7 @@ function get_data(){
 		  "Area of Residence of Bride","County of",
 		  "County of Usual Residence","County",
 		  "Towns by Size", "Region", "Regional Authority",
-		  "Garda Division", "Local Authority"];
+		  "Garda Division", "Local Authority", "Region and County"];
     
     var geoName = null;
     var geoIndex = null;
@@ -1166,14 +1171,13 @@ function time_stat(json_data){
     // grab the #drawing section and add a new div for this graph
     $("#drawing").prepend(HTMLgraphDiv.replace('%%data%%', graphCounter));
     var currentDiv = "#graph-id" + String(graphCounter);
-    $(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
+    //$(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
 
     var margin = {top: 30, right: 20, bottom: 50, left: 100},
 	width = 800 - margin.left - margin.right,
 	height = 330 - margin.top - margin.bottom;
     // format for monthly cso statistics
     var format = what_format(json_data.time_base);
-    console.log(format)
     var parseDate = d3.time.format(format).parse;
 
     var xScale = d3.time.scale().range([0, width]);
