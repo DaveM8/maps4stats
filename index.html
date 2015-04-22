@@ -14,21 +14,49 @@
    
    <script type="text/javascript" src="js/CollapsibleLists.compressed.js"></script>
    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+   <script type="text/javascript" src="js/ui.js"></script>
+   <script type="text/javascript" src="js/stat-map.js"></script>
   </head>
   <body>
-    
-    <div id="header" class="hidden-print">
-      <div id="list-dataset"></div>
-      <div id="drop-downs"></div>
-      <div id="buttons"></div>
-    </div>    
+
+    <div class="my-bs-nav"></div>  
+    <div class="jumbotron"> 
+      <h1>Maps4Stats</h1>
+      <h2>Visualising Irelands Data<h2>
+      <p>Welcome this web site allows you to visualize all of the Central Statistics office Irelands data.</p>
+      <p><a class="btn btn-primary btn-lg" href="geo.html" role="button">Begin Visualizing</a></p>
+      <p><a class="btn btn-primary btn-lg" href="tut.html" role="button">Tutorial</a></p>
+    </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Large modal</button>
+
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+	<div class="modal-content">
+	  <div id="drawing"></div>
+	  <script>
+	    stat_by_time("AJA01C1")
+	    </script>
+	    
+	  
+	</div>
+      </div>
+    </div>
+      
+      <!--
+      <div id="header" class="hidden-print">
+	<div id="list-dataset"></div>
+	<div id="drop-downs"></div>
+	<div id="buttons" class="btn-group" role="toolbar"></div>
+      </div>
+
+
     <div>
       <div id="side" class="hidden-print"></div>
       <div id="drawing">
 
       </div>
-    </div>
-   <script type="text/javascript" src="js/stat-map.js"></script>
+    </div> -->
+
   
 
 

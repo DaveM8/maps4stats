@@ -1064,6 +1064,9 @@ function get_set_code(stat_code){
     return getjsonStat(base+set_code);
 }
 
+function md(id){
+    
+}
 stat_by_time("AJA01C1");
 //stat_by_time("THA16C1");
 function stat_by_time(stat_code){

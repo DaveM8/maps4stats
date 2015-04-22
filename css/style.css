@@ -1,3 +1,12 @@
+.jumbotron{
+    background-image: url("../pic/maps4stats.png");
+    backgroung-color: rgba(34,34,34,.7); 
+}
+body { padding-top: 70px; }
+
+#top-nav{
+    background-color: "#fff";
+}
 #dataset{
     overflow : hidden;
 }
@@ -61,7 +70,7 @@ path {
     background-color:#fff;
     padding: 5px;
     float: top;
-    top : 5px;
+    top : 50px;
 }
 #drawing{
     padding: 10px;
@@ -118,7 +127,7 @@ path {
 }
 
 li.collapsibleListOpen{
-  list-style-image:url('minus.png');
+  /*list-style-image:url('minus.png');*/
   cursor:pointer;
 }
 
