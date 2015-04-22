@@ -404,7 +404,7 @@ function barChart(data){
 var ds = getjsonStat();
 ds=ds.Dataset(0);
 //MAIN
-list_dataset();
+//list_dataset();
 create_lists(ds);
 
 $("#info-map").on('change', function(){
@@ -851,6 +851,7 @@ function clean_region_names(geo_value){
     var clean_names = {};
     // adjust the names to match the osi files
     for(var key in geo_value){
+	console.log(geo_value[key]);
 	if (key == "Border, Midland and Western"){
 	    //not working dont draw use nuts2 map               
 	}
