@@ -11,6 +11,19 @@ handlers:
   static_dir: js
 - url: /json
   static_dir: json
+# non scable hack I will write a python script to create the html on the fly
+- url: /base.html
+  static_files: html/base.html
+  upload: html/base.html
+- url: /about.html
+  static_files: html/about.html
+  upload: html/about.html
+- url: /var.html
+  static_files: html/var.html
+  upload: html/var.html
+- url: /geo.html
+  static_files: html/geo.html
+  upload: html/geo.html
 - url: /
   static_files: index.html
   upload: index.html

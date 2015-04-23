@@ -1,8 +1,8 @@
-.jumbotron{
+/*.jumbotron{
     background-image: url("../pic/maps4stats.png");
     backgroung-color: rgba(34,34,34,.7); 
-}
-body { padding-top: 70px; }
+}*/
+body { padding-top: 60px; }
 
 #top-nav{
     background-color: "#fff";

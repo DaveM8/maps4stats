@@ -10,6 +10,6 @@ var HTMLfirstOption = '<option selected="true" style="display:none;">%%display%%
 //var HTMLsubmit = '<input id="%%data%%" type="submit" onclick="showData()" value="View Data">';
 var HTMLbutton = '<button class="btn btn-default" id="%%data%%" type="button" onclick="%%action%%()">%%display%%</button>';
 
-var HTMLgraphDiv = '<div id=graph-id%%data%% class ="graph"></div>';
+var HTMLgraphDiv = '<div id=graph-id%%data%% class ="graph col-xs-12 col-md-8"></div>';
 var HTMLgraphTitle = '<h3 class="main-title">%%main%%</h3>';
 var HTMLmapTitle = '<h3 class="map-title">%%main%%</h3>';

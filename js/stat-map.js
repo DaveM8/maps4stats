@@ -54,7 +54,7 @@ function create_lists(dss){
 function list_dataset(){
     var dataset_list = httpGetJson("json/datasets.json");
     $('#header').prepend(HTMLaddSelect.replace('%%data%%', "dataset"));
-    for( i in dataset_list){
+    for( var i in dataset_list){
 	var option_box = HTMLaddOption.replace('%%value%%', i);
 	option_box = option_box.replace('%%id%%', i);
 	$("#dataset").append(option_box.replace('%%text%%', String(dataset_list[i])));
@@ -216,7 +216,7 @@ function byStat(){
     var stat_base = {};
     for(i =0; i<ds.Dimension(stat).length; i++){
 	cube[stat_index] = i;
-	var unit = ds.Dimension(stat).Category(i).unit
+	var unit = ds.Dimension(stat).Category(i).unit;
 	stats.push(parseFloat(ds.Data(cube).value));
 	labels.push(ds.Dimension(stat).Category(i).label);
     }
@@ -437,6 +437,8 @@ function load_data(dataset_name){
     create_lists(ds);
 }
 
+// functon dose not apper to be in use
+/*
 function getNames(examples){
     // load datasets.json and look up the names
     datasets = httpGetJson("json/datasets.json");
@@ -446,7 +448,8 @@ function getNames(examples){
     }
     return with_names;
 }
-						   
+*/
+
 function barTime(){
     data = byTime();
     barChart(data);
@@ -459,6 +462,8 @@ function statBar(){
 
 function countyBar(){
     data = byCounty();
+    for(line in data)
+	console.log(data[line])
     if(data){
 	barChart(data);
     }
@@ -612,107 +617,6 @@ function simple_line(data){
 	.call(yAxis);
 
 }
-function make_x_axis(xScale, ticks=40){
-    return d3.svg.axis()
-	.scale(xScale)
-	.orient("bottom")
-	.ticks(ticks);
-}
-function make_y_axis(yScale, ticks=5){
-    return d3.svg.axis()
-	.scale(yScale)
-	.orient("left")
-	.ticks(ticks);
-}
-
-// create the side menu
-make_side();
-function make_side(){
-    //var stat_json = httpGetJson("json/statstic.json");
-    //var stat_list = stat_json["Statstic"];
-    //var l = stat_list.length;
-    //var stat_index = [];
-    //for (var k=0; k<12; ++k){
-	
-//	stat_index.push(Math.floor(Math.random()*l));
-//    }
-    var count = 0;
-    var geo = httpGetJson("json/geo_only.json");
-    var files = httpGetJson("json/files.json")
-
-    $("#side").append('<ul id="side-files" class="collapsibleList"></ul>');
-    //$("#side-files").append('<li>Statstic<ul class="collapsibleList" id="statstic"></ul></li>');
-    //for (k=0; k<stat_index.length; ++k){
-//	$("#statstic").append('<li class="click-bar" id="' +stat_list[stat_index[k]]+ '">' + set_names[stat_list[stat_index[k]]] + '</li>');
-    //  }
-    //one_side_section(geo);
-    side_by_base();
-    //one_side_section(files);
-    CollapsibleLists.apply();
-    
-}
-function side_by_base(){
-    // create a side bar showing the datasets by unit
-    // this will create a line chart with many lines on it 
-    var set_names= httpGetJson("json/datasets.json");
-    var stat_by_set = httpGetJson("json/stat_by_set.json");
-    var unit_by_set = httpGetJson("json/unit_by_stat.json");
-    var id_counter = 0;
-
-    for(var i in unit_by_set){
-	id_counter += 1;
-	$("#side-files").append('<li>' + i + '<ul class="collapsibleList" id="side-by-unit-'+ id_counter + '"></ul></li>');
-	for(var j=0; j<unit_by_set[i].length; j++){
-	    //console.log(unit_by_set[i][j]);
-	    $("#side-by-unit-"+id_counter).append('<li class="click-unit" id="' +
-						  unit_by_set[i][j] +
-						  '">' + set_names[stat_by_set[unit_by_set[i][j]]] + '</li>');
-	}
-	
-    }
-}
-function one_side_section(files){
-    var set_names= httpGetJson("json/datasets.json");
-    var count = 0;
-    for(var i in files){
-	//console.log(i)
-	count += 1;
-	$("#side-files").append('<li>' + i + '<ul class="collapsibleList" id="file-'+ count + '"></ul></li>');
-	for(var j=0; j<files[i].length; j++){
-	    $("#file-"+ count).append('<li class="click-bait" id="' +files[i][j]+ '">' + set_names[files[i][j]] + '</li>');
-	}
-    }
-    
-}
-$('.click-unit').click( function(){
-    var stat_by_set = httpGetJson("json/stat_by_set.json");
-    load_data(stat_by_set[$(this).attr('id')]);
-    console.log("current set " + stat_by_set[$(this).attr('id')]);
-    stat_by_time($(this).attr('id'));
-    return false;
-});
-   
-$('.click-bait').click( function() {
-    load_data($(this).attr('id'));
-    console.log("current_set " + $(this).attr('id'));
-    get_data();
-    return false;
-});
-
-$('.click-bar').click( function() {
-    load_data($(this).attr('id'));
-    console.log("current_set " + $(this).attr('id'));
-    statBar();
-    return false;
-});
-
-
-// draw maps of the cso data
-
-// flow starts here
-
-
-
 
 function get_data(){
     // takes a json-stat object and draws maps
@@ -966,8 +870,8 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	data[key] = Math.log(data[key]+1);
     }
     var margin = {top: 20, right: 10, bottom: 20, left: 20},
-	width = 700 - margin.left - margin.right,
-	height = 800 - margin.top - margin.bottom;
+	width = 600 - margin.left - margin.right,
+	height = 600 - margin.top - margin.bottom;
 
     var color = d3.scale.quantize()
 	.range(["rgb(237,248,233)", "rgb(186,228,179)",
@@ -977,7 +881,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
     var projection = d3.geo.albers()
       .rotate([0,0])
       .center([-9.3, 53.2])
-      .scale(9000)
+      .scale(7500)
       .translate([width/2, height/2])
       .precision(.1);
   
@@ -988,7 +892,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
     var mapid = "map-" + nextDiv.substring(1);
     
     // put a map div to select maps for css
-    $(nextDiv).append('<div id=' + mapid + ' class="map"></div>');
+    $(nextDiv).append('<div id=' + mapid + ' class="map col-xs-12 col-md-8"></div>');
     $(nextDiv).prepend(HTMLmapTitle.replace("%%main%%", main));
 
     var svg = d3.select('#' + mapid).append("svg")
@@ -1049,7 +953,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	    .attr("x", (width/2))
 	    .attr("y",  (margin.top /2))
 	    .attr("text-anchor", "middle")
-	    .attr("font-size", "16px")
+	    .attr("font-size", "24px")
 	    .style("text-decoration", "underline")
 	    .text(myStr);
 
@@ -1067,7 +971,7 @@ function get_set_code(stat_code){
 function md(id){
     
 }
-stat_by_time("AJA01C1");
+//stat_by_time("AJA01C1");
 //stat_by_time("THA16C1");
 function stat_by_time(stat_code){
     // create a json of time series data for each Statistic

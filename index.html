@@ -24,23 +24,49 @@
       <h1>Maps4Stats</h1>
       <h2>Visualising Irelands Data<h2>
       <p>Welcome this web site allows you to visualize all of the Central Statistics office Irelands data.</p>
-      <p><a class="btn btn-primary btn-lg" href="geo.html" role="button">Begin Visualizing</a></p>
-      <p><a class="btn btn-primary btn-lg" href="tut.html" role="button">Tutorial</a></p>
-    </div>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Large modal</button>
-
+      <p><a class="btn btn-primary btn-lg" href="http://www.maps4stats.com/geo.html" role="button">Begin Visualizing</a></p>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Getting Started</button>
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
 	<div class="modal-content">
-	  <div id="drawing"></div>
-	  <script>
-	    stat_by_time("AJA01C1")
-	    </script>
+	 <p>This Application groups the data sets from the Central Statistics Office
+	    by Geographical Region, Unit Base,Time Series, and Feature.
+	   <ol><li><strong>By Region</strong> click on the Maps button on the toolbar to begian
+	       viwing the data by region.</li>
+	      <li>This will display the data by geographical region in the side bar.</li>
+	      <li>Click on a region and the data sets from that region will be displayed.</li>
+	      <li>Then select a data set and a map of Ireland will be displayed.</li>
+	      <li>If there is more that one regional division in the set both will be displayed<strong>You may have to scroll to both maps</strong></li>
+	    </ol>
+	    <br>
+	    <ol>
+	      
+	      <li>The<strong>Time</strong> is used the same click on the menus to expand then click on a data set name to display a graph.</li>
+	      <li>Time Displays data in a time series format the features are grouped<strong> by unit</strong> each feature in a data set is given a different coloured line</li>
+	      <li>All the data sets in each section can be easly compaired and ploted on the same graph as they
+		have the same unit. This is a useful feature and will be expended on soon.</li>
+	    </ol>
+	    <br>
+	    <ol>
+	      <li><strong>Feature</strong>(temperaly out of action) groups the datasets which share similar variables such as Time in Years or County</li>
+	      <li>Feature is used in the same way as the others</li>
+	    </ol>
+	    <ul>
+	    <li>Coming Soon...</li>
+	    <li>This application is stil very young and has not been extensively tested so please try to break it and send a bug report</li>
+	    <li>A search feature should be available very soon...</li>
+	    <li>I will create a tree view the same as the cso use and display the most appropriate graph when a user clicks on a link</li>
+	    <li>The graphs need to be cleaned up a lot I really need legends...</li>
+	    <li>I'm also planning a Census explorer currently none of the graphs do a good job with the census data</li>
+	    </ul>
 	    
+																	       
 	  
 	</div>
       </div>
     </div>
+    </div>
+
       
       <!--
       <div id="header" class="hidden-print">
@@ -58,7 +84,9 @@
     </div> -->
 
   
-
+      <script>
+	make_nav_bar();
+      </script>
 
 </body>
 </html>
