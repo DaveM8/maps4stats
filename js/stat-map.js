@@ -510,14 +510,59 @@ function getNextDiv(){
 function what_format(role){
 
     if(role == "Month"){
-	return "%YM%M";
+	return "%YM%m";
     }else if(role === "Quarter"){
-	//TODO fix very hacky treating 1234 as the first 4 months of the year
 	return "%YQ%m";
     }else{
 	return "%Y";
     }
 }
+
+function quater_month(quater){
+    // retuen the month number begining the quater
+    switch(quater){
+    case 1:
+	return 1;
+	break;
+    case 2:
+	return 4;
+	break;
+    case 3:
+	return 7;
+	break;
+    case 4:
+	return 10;
+	break;
+    }
+}
+/************************************************************
+its funny that I wrote this code to fix a problem 
+but it seems to have sloved its self
+function parseDate(str_date, format){
+    // return a Data object when given a cso date string
+    // Dates come in three types
+    // just the year 2000
+    // yearMmonth 2014M03
+    // yearQquater 2013Q03
+    // Return a javascript date object whaic can be used
+    // to draw the graph
+    console.log("in parseDate");
+    d3_format = d3.format(format);
+    if(format === "%Y"){
+	return d3_format(new Date(str_date));
+    } else if(format === "%YM%m"){
+	var year = str_date.substring(0,4);
+	var month = str_date.substring(5);
+	//console.log(month + " "+ year)
+	return d3_format(new Date(year, month));
+    } else if(format === "%YQ%m"){
+	var year = str_date.substring(0,4);
+	var quater = quater_month(str_date.substring(5));
+	console.log(month + " " + quater);
+	return d3_format(new Date(year, quater));
+    }
+}
+*/
 function simple_line(data){
     //alert(data.role)
     graphCounter += 1;
@@ -527,12 +572,12 @@ function simple_line(data){
     $(currentDiv).append(HTMLgraphTitle.replace("%%main%%", data.main));
 
     var margin = {top: 30, right: 20, bottom: 50, left: 100},
-	width = 8000 - margin.left - margin.right,
+	width = 800 - margin.left - margin.right,
 	height = 330 - margin.top - margin.bottom;
-    // format for monthly cso statistics
+    // format for cso statistic
     var format = what_format(data.role);
+    //var date_format = d3.time.format(format);
     var parseDate = d3.time.format(format).parse;
-
     var xScale = d3.time.scale().range([0, width]);
     var yScale = d3.scale.linear().range([height, 0]);
     
@@ -551,13 +596,16 @@ function simple_line(data){
     var my_data = [];
     for(i=0; i<data.x.length; ++i){
 	var data_line = [];
-	var parse_x = parseDate(String(data.x[i]));
-	data_line.push(parse_x);
+	var parse_date = parseDate(String(data.x[i]), format); 
+	console.log(parse_date);
+	data_line.push(parse_date);
 	data_line.push(data.y[i]);
 	my_data.push(data_line);
 	//console.log(data_line)
     }
-    console.log(my_data)
+    for(var i in my_data){
+	//console.log(my_data[i][0] + " " + my_data[i][1])
+    }
     //for(var i =0; i<my_data.length; ++i){
 	//console.log(my_data[i]);
     //}
@@ -1165,6 +1213,7 @@ function time_stat(json_data){
 	var line_data =[];
 	for(var i=0; i<json_data.data[key].length; ++i){
 	    var parse_x = parseDate(String(json_data.time[i]));
+	    //console.log(parse_x)
 	    line_data.push([parse_x, json_data.data[key][i]]);
 	    
 	}
