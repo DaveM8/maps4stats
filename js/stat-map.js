@@ -1,27 +1,27 @@
-// stat-map.js a javascript for visualising json-stat data
+// stat-map.js a JavaScript's for visualising json-stat data
 // using d3.js
 // copyright David Morrisroe 2015
 
 // used to give an id to each graph we draw
 var graphCounter=0;
 // create_lists a function which takes a jsonStat object and populates
-// elements with all the lables in the data set
+// elements with all the labels in the data set
 function create_lists(dss){
     // find the correct place on the page add a form with
-    // bose for each lable in the data set
+    // bose for each label in the data set
    $('#drop-downs').append(HTMLcreateDropDown.replace('%%data%%',"1"));
-    // for each vairible
+    // for each variable
     for (var j=0; j<dss.Dimension().length; j++){
-	// use the discription of each vairiable as the id of the element
+	// use the description of each variable as the id of the element
 	var select_id = dss.Dimension(j).label;
 	// remove spaces and commas
 	select_id = select_id.replace(/ /g, "_");
 	select_id = select_id.replace(/,/g, "");
-	// add a select box for each vairiable
+	// add a select box for each variable
 	$('.drop-data').append(HTMLaddSelect.replace("%%data%%", select_id));
 	for(var i=0; i<dss.Dimension(j).length; i++){
 	    // populate the drop-downs with all data points
-	    // display the lable and send the id
+	    // display the label and send the id
 	    var text = dss.Dimension(j).Category(i).label;
 	    var value = dss.Dimension(j).id[i];
 	    var strip_spaces = dss.Dimension(j).label;
@@ -94,10 +94,10 @@ function byCounty(){
     // return the data for the current statistic for each county
     // It will be hard to make this very robust because the cso api
     // dose not include geo information
-    // in the webready app I'll have just a selection of
+    // in the web ready app I'll have just a selection of
     // data sets which I know will work
-    // this is a possible compeate list of Irish geographical
-    // refercines in the cso data
+    // this is a possible complete list of Irish geographical
+    // reference in the cso data
     
     var names = [ "Province or County", "Constituency",
 		  "Province County or City", "Garda Region",
@@ -112,8 +112,8 @@ function byCounty(){
     var geoIndex = null;
     var stat = String(ds.role.metric);
     var ids = ds.id;
-    var main = String(ds.label); // title of graph to be drawen
-    var role = String(ds.role.time); // the time peirod of the data
+    var main = String(ds.label); // title of graph to be drawn
+    var role = String(ds.role.time); // the time Poirot of the data
     var xlab = role; // xlabel of graph to be drawen
     var ylab = String(ds.role.metric.label); // ylabel of graph to be drawen
     var statIndex = null;
@@ -152,8 +152,8 @@ function byCounty(){
 	//
 	// not very efficint
 	for (j=countys.length; j >= 0; --j){
-	    // hack for dealing with tipperary north + south
-	    // add them tograther maybe get the mean???
+	    // hack for dealing with Tipperary north + south
+	    // add them together maybe get the mean???
 	    if(check_county.match(".*Tipperary$")){
 		if  (! first_Tipp){
 		    first_Tipp += parseFloat(ds.Data(cube).value);
@@ -172,7 +172,7 @@ function byCounty(){
 	    }
 	}
     }
-        // adjust the base of the data set to help with compariaions
+        // adjust the base of the data set to help with comparisons
     var base = ds.Dimension(stat).Category(cube[statIndex]).unit['Base'];
 
     var set = {};
@@ -232,7 +232,7 @@ function byStat(){
 }
 
 function byTime(){
-    // select the data foe each time peiroid for all selected options
+    // select the data foe each time period for all selected options
 
     var ids = ds.id;
     var yearIndex = null;
@@ -240,10 +240,10 @@ function byTime(){
     
     var main = String(ds.label); // title of graph to be drawen
        
-    var role = String(ds.role.time); // the time peirod of the data
+    var role = String(ds.role.time); // the time period of the data
     var stat = String(ds.role.metric);
     var xlab = role; // xlabel of 
-    // get ithe index of the time peirod
+    // get the index of the time period
     // and the current Satittic
     // these are part of the role function 
     for(var k in ids){
@@ -254,8 +254,8 @@ function byTime(){
 	    statIndex = k;
 	}
     }
-    // put the index of each metrix the user has selected
-    // this array of indexs can then be past to json-stat
+    // put the index of each metric the user has selected
+    // this array of indexes can then be past to json-stat
     // tool kit to return the value
     var cube = [];
     $('#drop-downs :selected').each(function(i, selected){
@@ -276,8 +276,8 @@ function byTime(){
     }
     
     // remove all values which are NaN
-    // if a data point dose not exsit it is stored as .. in the jsonstat files
-    // javascript will interpet as Nan remove any NaN values before plotting
+    // if a data point dose not exist it is stored as .. in the jsonstat files
+    // JavaScript will interpret as Nan remove any NaN values before plotting
     var nans = [];
     // save the index of all NaN values
     for(var j in yearData)
@@ -311,7 +311,7 @@ function barChart(data){
     $("#drawing").prepend(HTMLgraphDiv.replace('%%data%%', graphCounter));
     currentDiv = "#graph-id" + String(graphCounter);
     $(currentDiv).append(HTMLgraphTitle.replace("%%main%%", data.main));
-    // use an ordainal scale on the x axis for each bar
+    // use an ordinal scale on the x axis for each bar
     var xScale = d3.scale.ordinal()
                    .domain(d3.range(data.x.length))
                    .rangeRoundBands([60, w-margin.left - margin.right], 0.05);
@@ -331,14 +331,16 @@ function barChart(data){
         .attr("height", h - margin.top - margin.bottom);
 
     svg.selectAll("rect")
-                 .data(data.y)
-                 .enter()
-                 .append("rect")
-                 .attr("x", function(d, i) { return xScale(i);})
+        .data(data.y)
+        .enter()
+        .append("rect")
+        .attr("x", function(d, i) { return xScale(i);})
         .attr("y", function(d) {
 	    return h - margin.top - margin.bottom - yScale(d); })
-                 .attr("width", xScale.rangeBand())
-                 .attr("height", function(d){ return yScale(d); })
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d){ return yScale(d); })
+	.attr("fill", "teal");
+    /*
                  .attr("fill", function(d) {
 		     var col = 0;
 		     if(d > 255){
@@ -348,7 +350,7 @@ function barChart(data){
 		     else
 			 col = d;
 		     return "rgb(0, 0, " + col + ")";
-		 });
+		 });*/
     // label at bottom of graph
     svg.selectAll("text")
        .data(data.y)
@@ -359,7 +361,7 @@ function barChart(data){
        .attr("x", function(d, i) { 
 	   return xScale(i) + xScale.rangeBand() / 2;
        })
-	.attr("y", function(d) { return h- margin.top - margin.bottom;})
+	. attr("y", function(d) { return h- margin.top - margin.bottom;})
 	.attr("font-family", "sans-serif")
 	.attr("font-size", "12px")
 	.attr("fill", "white")
@@ -437,7 +439,7 @@ function load_data(dataset_name){
     create_lists(ds);
 }
 
-// functon dose not apper to be in use
+// function dose not appear to be in use
 /*
 function getNames(examples){
     // load datasets.json and look up the names
@@ -519,7 +521,7 @@ function what_format(role){
 }
 
 function quater_month(quater){
-    // retuen the month number begining the quater
+    // return the month number beginning the quarter
     switch(quater){
     case 1:
 	return 1;
@@ -537,14 +539,14 @@ function quater_month(quater){
 }
 /************************************************************
 its funny that I wrote this code to fix a problem 
-but it seems to have sloved its self
+but it seems to have solved its self
 function parseDate(str_date, format){
     // return a Data object when given a cso date string
     // Dates come in three types
     // just the year 2000
     // yearMmonth 2014M03
     // yearQquater 2013Q03
-    // Return a javascript date object whaic can be used
+    // Return a JavaScript date object whaic can be used
     // to draw the graph
     console.log("in parseDate");
     d3_format = d3.format(format);
@@ -670,7 +672,7 @@ function get_data(){
     // takes a json-stat object and draws maps
     // by all of the different geographical areas
     // on the map
-    // county; provence; region; townland; garda region
+    // county; Provence; region; town land; garda region
 
     // used to find the geo field in the dataset
     // TODO deal with Local Authority edge case
@@ -738,8 +740,8 @@ function get_data(){
     switch(geoName){
     case "Constituency":{
 	// leave out for now because of problems
-	// draw a map on Constituency boundra
-	// Not doing the Constituencys I could not get the maps to displa
+	// draw a map on Constituency boundary
+	// Not doing the Constituency's I could not get the maps to display
 	break;
     }
     case "Towns by Size":{
@@ -872,7 +874,7 @@ function clean_county_name(geo_value){
 	case "Tipperary ST":
 	case "North Tipperary":
 	case "South Tipperary":{
-	    // what the fuck to do with tipperary
+	    // what the fuck to do with Tipperary
 	    // here I add them together would the mean be better?
 	    if  (firstTipp){
 		clean_names["Tipperary"] = parseFloat(geo_value[key]);
@@ -1024,7 +1026,7 @@ function md(id){
 function stat_by_time(stat_code){
     // create a json of time series data for each Statistic
     // grab a single Statistic out of a dataset
-    // return a structure suitiable for dring a line chart with
+    // return a structure suitiable for during a line chart with
     // a line for each dimension
     var dataset = get_set_code(stat_code);
     dataset = dataset.Dataset(0);
@@ -1078,7 +1080,7 @@ function stat_by_time(stat_code){
 	    var current = [];
 	    cube[i] = k;
 	    var current_label = dataset.Dimension(i).Category(k).label;
-	    // for each time peirod of ach dimension
+	    // for each time period of each dimension
 	    for(var j=0; j<dataset.Dimension(time_index).length; ++j){
 		// create an array for all vars by time
 		cube[time_index] = j;
@@ -1116,8 +1118,8 @@ function stat_by_time(stat_code){
 }
 
 function time_stat(json_data){
-    // take a json file with time seiries data and
-    // draw all of the vairibles on a line chart
+    // take a json file with time series data and
+    // draw all of the variables on a line chart
     if(json_data["time"].length < 2){
 	alert("Data not time series");
 	return -1;
@@ -1157,7 +1159,7 @@ function time_stat(json_data){
     time_scale[0] = parseDate((String(time_scale[0])));
     time_scale[1] = parseDate((String(time_scale[1])));
     xScale.domain(time_scale);
-    // if the minimum value is positve start the y axis at 0
+    // if the minimum value is positive start the y axis at 0
     // if the minimum is less than 0 start the there
     // TODO draw a light line at 0 if the axis is below 0
     var min_scale = 0;
@@ -1235,4 +1237,3 @@ function time_stat(json_data){
 	.call(yAxis);
 
 }
-
