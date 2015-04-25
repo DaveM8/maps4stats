@@ -4,6 +4,11 @@
 }*/
 body { padding-top: 60px; }
 
+.legend{
+    font-size: 16px;
+    font-weight: bold;
+    text-anchor: middle;
+}
 #top-nav{
     background-color: "#fff";
 }

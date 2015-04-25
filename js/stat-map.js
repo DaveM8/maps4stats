@@ -1131,9 +1131,9 @@ function time_stat(json_data){
     var currentDiv = "#graph-id" + String(graphCounter);
     //$(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
 
-    var margin = {top: 30, right: 20, bottom: 50, left: 100},
+    var margin = {top: 30, right: 20, bottom: 150, left: 100},
 	width = 800 - margin.left - margin.right,
-	height = 330 - margin.top - margin.bottom;
+	height = 600 - margin.top - margin.bottom;
     // format for monthly cso statistics
     var format = what_format(json_data.time_base);
     var parseDate = d3.time.format(format).parse;
@@ -1206,26 +1206,39 @@ function time_stat(json_data){
 	.style("test-anchor", "middle")
 	.text(json_data.base);
 
+    // create a data structure with the x, y cordinets of each
+    // line and a colour for each line
     var colour = d3.scale.category20();
     var c = 0;
+    var lines = {};
     for(var key in json_data.data){
+	lines[key] = {};
+	lines[key]['data'] = null;
+	lines[key]['colour'] = null;
+	
 	// for each data array in json_data.data
 	// create a 2d array format [[time, value], [time, value]...]
 	// pass this to svg.path to draw the line 
 	var line_data =[];
+	var each_line ={}
 	for(var i=0; i<json_data.data[key].length; ++i){
 	    var parse_x = parseDate(String(json_data.time[i]));
 	    //console.log(parse_x)
-	    line_data.push([parse_x, json_data.data[key][i]]);
-	    
+	    line_data.push([parse_x, json_data.data[key][i]]);	    
 	}
+	lines[key]["data"] = line_data;
+	lines[key]["colour"] = colour(c);
+	c+=1;
+    }
+    // draw wach line
+    for(key in lines){
 	svg.append("path")
 	    .attr("class", "line")
 	    .style("stroke", function(){
-		return colour(c);})
-	    .attr("d", valueline(line_data));
-	c+=1;
+		return lines[key]['colour'];})
+	    .attr("d", valueline(lines[key]['data']));
     }
+    var legend_space = width/lines.length;
     
     svg.append("g") // Add the X Axis
 	.attr("class", "x axis")
