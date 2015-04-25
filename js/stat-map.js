@@ -1131,9 +1131,9 @@ function time_stat(json_data){
     var currentDiv = "#graph-id" + String(graphCounter);
     //$(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
 
-    var margin = {top: 30, right: 20, bottom: 150, left: 100},
+    var margin = {top: 30, right: 20, bottom: 30, left: 40},
 	width = 800 - margin.left - margin.right,
-	height = 600 - margin.top - margin.bottom;
+	height = 400 - margin.top - margin.bottom;
     // format for monthly cso statistics
     var format = what_format(json_data.time_base);
     var parseDate = d3.time.format(format).parse;
@@ -1234,11 +1234,23 @@ function time_stat(json_data){
     for(key in lines){
 	svg.append("path")
 	    .attr("class", "line")
+	    .attr("data-legend", key) 
 	    .style("stroke", function(){
 		return lines[key]['colour'];})
 	    .attr("d", valueline(lines[key]['data']));
     }
-    var legend_space = width/lines.length;
+
+    legend = svg.append('g')
+	.attr("class", "legend")
+	.attr("transform", "translate(50, 30)")
+        .style("font-size", "12px")
+	.call(d3.legend);
+   // setTimeout(function() {
+//	legend
+//	    .style("font-size", "10px")
+//	    .attr("data-style-padding", 10)
+//	    .call(d3.legend)
+  //  }, 1000)
     
     svg.append("g") // Add the X Axis
 	.attr("class", "x axis")
