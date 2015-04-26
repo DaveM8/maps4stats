@@ -1129,11 +1129,13 @@ function time_stat(json_data){
     // grab the #drawing section and add a new div for this graph
     $("#drawing").prepend(HTMLgraphDiv.replace('%%data%%', graphCounter));
     var currentDiv = "#graph-id" + String(graphCounter);
+    //$(currentDiv).append(HTMLlegendDiv.replace('%%data%%', graphCounter));
+    //var legend_div = "legend-id" + graphCounter;
     //$(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
 
-    var margin = {top: 30, right: 20, bottom: 150, left: 100},
-	width = 800 - margin.left - margin.right,
-	height = 600 - margin.top - margin.bottom;
+    var margin = {top: 30, right: 200, bottom: 30, left: 30},
+	width = 880 - margin.left - margin.right,
+	height = 400 - margin.top - margin.bottom;
     // format for monthly cso statistics
     var format = what_format(json_data.time_base);
     var parseDate = d3.time.format(format).parse;
@@ -1220,7 +1222,7 @@ function time_stat(json_data){
 	// create a 2d array format [[time, value], [time, value]...]
 	// pass this to svg.path to draw the line 
 	var line_data =[];
-	var each_line ={}
+	var each_line ={};
 	for(var i=0; i<json_data.data[key].length; ++i){
 	    var parse_x = parseDate(String(json_data.time[i]));
 	    //console.log(parse_x)
@@ -1234,12 +1236,11 @@ function time_stat(json_data){
     for(key in lines){
 	svg.append("path")
 	    .attr("class", "line")
+	    .attr("data-legend", key) 
 	    .style("stroke", function(){
 		return lines[key]['colour'];})
 	    .attr("d", valueline(lines[key]['data']));
     }
-    var legend_space = width/lines.length;
-    
     svg.append("g") // Add the X Axis
 	.attr("class", "x axis")
 	.attr("transform", "translate(0," + height + ")")
@@ -1248,5 +1249,13 @@ function time_stat(json_data){
     svg.append("g")
 	.attr("class", "y axis")
 	.call(yAxis);
+  
+    legend = svg.append('g')
+	.attr("class", "legend")
+	//.attr("data-legend-pos", 790)
+	.attr("transform","translate(700, 30)")
+        .style("font-size", "12px")
+	.call(d3.legend);
+    
 
 }
