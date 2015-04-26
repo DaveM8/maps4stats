@@ -4,16 +4,18 @@
     <meta charset="utf-8">
     <title>maps4stats</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
-   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-   <script type="text/javascript" src="js/jQuery.js"></script>
-   <script src="http://d3js.org/topojson.v1.min.js"></script>
+   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
+   <script type="text/javascript" src="js/jquery.min.js"></script>
+   <script type="text/javascript" src="js/topojson.js"></script>
    <script type="text/javascript" src="js/d3.min.js"></script>
-   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+   <script type="text/javascript" src="js/bootstrap.min.js"></script>
    <script type="text/javascript" src="js/backbone.js"></script>
    <script type="text/javascript" src="js/json-stat.js"></script>
-   
    <script type="text/javascript" src="js/CollapsibleLists.compressed.js"></script>
+   <script type="text/javascript" src="js/legend.js"></script>
+   
    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+
    <script type="text/javascript" src="js/ui.js"></script>
    <script type="text/javascript" src="js/stat-map.js"></script>
   </head>
@@ -22,17 +24,17 @@
     <div class="my-bs-nav"></div>  
     <div class="jumbotron"> 
       <h1>Maps4Stats</h1>
-      <h2>Visualising Irelands Data<h2>
+      <h2>Visualizing Irelands Data<h2>
       <p>Welcome this web site allows you to visualize all of the Central Statistics office Irelands data.</p>
-      <p><a class="btn btn-primary btn-lg" href="http://www.maps4stats.com/geo.html" role="button">Begin Visualizing</a></p>
+      <p><a class="btn btn-primary btn-lg" href="base.html" role="button">Begin Visualizing</a></p>
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Getting Started</button>
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
 	<div class="modal-content">
 	 <p>This Application groups the data sets from the Central Statistics Office
 	    by Geographical Region, Unit Base,Time Series, and Feature.
-	   <ol><li><strong>By Region</strong> click on the Maps button on the toolbar to begian
-	       viwing the data by region.</li>
+	   <ol><li><strong>By Region</strong> click on the Maps button on the toolbar to begin
+	       viewing the data by region.</li>
 	      <li>This will display the data by geographical region in the side bar.</li>
 	      <li>Click on a region and the data sets from that region will be displayed.</li>
 	      <li>Then select a data set and a map of Ireland will be displayed.</li>
@@ -43,17 +45,17 @@
 	      
 	      <li>The<strong>Time</strong> is used the same click on the menus to expand then click on a data set name to display a graph.</li>
 	      <li>Time Displays data in a time series format the features are grouped<strong> by unit</strong> each feature in a data set is given a different coloured line</li>
-	      <li>All the data sets in each section can be easly compaired and ploted on the same graph as they
+	      <li>All the data sets in each section can be easily compared and plotted on the same graph as they
 		have the same unit. This is a useful feature and will be expended on soon.</li>
 	    </ol>
 	    <br>
 	    <ol>
-	      <li><strong>Feature</strong>(temperaly out of action) groups the datasets which share similar variables such as Time in Years or County</li>
+	      <li><strong>Feature</strong>(temperately out of action) groups the datasets which share similar variables such as Time in Years or County</li>
 	      <li>Feature is used in the same way as the others</li>
 	    </ol>
 	    <ul>
 	    <li>Coming Soon...</li>
-	    <li>This application is stil very young and has not been extensively tested so please try to break it and send a bug report</li>
+	    <li>This application is still very young and has not been extensively tested so please try to break it and send a bug report</li>
 	    <li>A search feature should be available very soon...</li>
 	    <li>I will create a tree view the same as the cso use and display the most appropriate graph when a user clicks on a link</li>
 	    <li>The graphs need to be cleaned up a lot I really need legends...</li>

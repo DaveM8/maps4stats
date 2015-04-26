@@ -1257,6 +1257,7 @@ function time_stat(json_data){
 	    .attr("id", key)
 	    .attr("width", 30)
 	    .attr("height", 30)
+	/*
 	    .on("mouseover", function() {
 		div.transition()
 		    .duration(200)
@@ -1270,7 +1271,7 @@ function time_stat(json_data){
 		div.transition()
 		    .duration(500)
 		    .style("opacity", 0);
-	    });
+	    });*/
 	counter += 1;
     }
 
