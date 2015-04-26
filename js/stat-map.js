@@ -1071,6 +1071,8 @@ function stat_by_time(stat_code){
     stat_time["time"] = years;
     stat_time['label'] = stat_label;
     stat_time['base'] = stat_base;
+    // number of lines in set
+    stat_time['n'] = years.length;
     for(i=0; i<ids.length; ++i){
 	// go throught all var except stat and time
 	if(i === time_index || i === stat_index)
@@ -1120,6 +1122,7 @@ function stat_by_time(stat_code){
 function time_stat(json_data){
     // take a json file with time series data and
     // draw all of the variables on a line chart
+    console.log(json_data['n'])
     if(json_data["time"].length < 2){
 	alert("Data not time series");
 	return -1;
@@ -1243,7 +1246,9 @@ function time_stat(json_data){
 	svg.append("path")
 	    .attr("class", "line")
 	    .attr('id', "line-" + key)
-	    .attr("data-legend", lines[key]['label']) 
+	    .attr("data-legend", lines[key]['label'])
+	    .attr("data-toggle", "tooltip")
+	    .attr("title", lines[key]['label'])
 	    .style("stroke", function(){
 		return lines[key]['colour'];})
 	    .attr("d", valueline(lines[key]['data']));
@@ -1254,6 +1259,8 @@ function time_stat(json_data){
 	    .attr("y", 0-margin.top)
 	    .attr("fill", lines[key]['colour'])
 	    .attr("class", "data-rect")
+	    .attr("data-toggle", "tooltip")
+	    .attr("title", lines[key]['label'])
 	    .attr("id", key)
 	    .attr("width", 30)
 	    .attr("height", 30)
@@ -1307,4 +1314,6 @@ function time_stat(json_data){
 	lines[$(this).attr('id')]['active'] = active;
 	
     });
+    $(".data-rect").tooltip();
+    //$('[.data-toggle="tooltip"]').tooltip();
 }
