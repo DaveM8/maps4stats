@@ -29,7 +29,7 @@ body { padding-top: 60px; }
 }
 #side{
     float: left;
-    width: 30%;
+    width: 20%;
     height: 100%;
     
 }
@@ -39,7 +39,9 @@ path {
     stroke-width: 2;
     fill: none;
 }
-
+.graph{
+    float: left;
+}
 .axis path,
 .axis line {
     fill: none;
@@ -87,8 +89,11 @@ path {
     padding: 10px;
     clear: top;
     float:left;
-    width: 70%;
+    width: 80%;
     
+}
+.legend-div{
+    float: right;
 }
 #example{
     width: 300px;
