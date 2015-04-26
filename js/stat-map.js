@@ -1262,7 +1262,7 @@ function time_stat(json_data){
 		    .duration(200)
 		    .style("opacity", .9);
 		div
-		    .html("Click to add<br>or romove lines.")
+		    .html("Click to add<br>or romove lines")
 		    .style("left", (d3.event.pageX) + "px")
 		    .style("top", (d3.event.pageY - 28) + "px");
 	    })
