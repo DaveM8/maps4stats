@@ -2,8 +2,35 @@
     background-image: url("../pic/maps4stats.png");
     backgroung-color: rgba(34,34,34,.7); 
 }*/
-body { padding-top: 60px; }
+@font-face{
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Ubuntu'), url('../fonts/Ubuntu-M.ttf');
+}
+body {
+    padding-top: 60px;
+    font-family: ubuntu, serif;
+}
+#about-project{
+    font-family: ubuntu, serif;
+    font-size: 16pt;
+}
 
+
+#about-project a:link{
+    color :  rgb(255, 127, 14);
+    text-decoration: none;
+}
+#about-project a:visited{
+    color : rgb(197, 176, 213);
+    text-decoration: none;
+}
+#about-project a:hover{
+    color: rgb(255, 187, 120);
+    text-decoration: none;
+    
+}
 .legend rect {
     fill:white;
     stroke:black;
