@@ -1110,7 +1110,7 @@ function stat_by_time(stat_code){
     stat_time.min = min;
     console.log("max " + max + " min " + min);
     for (var key in stat_time.data){
-	console.log(key + " " + stat_time.data[key].length);
+	//console.log(key + " " + stat_time.data[key]);
     }
     time_stat(stat_time);
     //return stat_time;
@@ -1133,7 +1133,7 @@ function time_stat(json_data){
     //var legend_div = "legend-id" + graphCounter;
     //$(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
 
-    var margin = {top: 30, right: 200, bottom: 30, left: 30},
+    var margin = {top: 50, right: 200, bottom: 30, left: 30},
 	width = 880 - margin.left - margin.right,
 	height = 400 - margin.top - margin.bottom;
     // format for monthly cso statistics
@@ -1183,7 +1183,7 @@ function time_stat(json_data){
 
     svg.append("text")
 	.attr("x", (width/2))
-	.attr("y", 0- (margin.top /2))
+	.attr("y", 0)
 	.attr("class", "line-chart-title")
 	.attr("text-anchor", "middle")
 	.attr("font-size", "16px")
@@ -1214,9 +1214,12 @@ function time_stat(json_data){
     var c = 0;
     var lines = {};
     for(var key in json_data.data){
-	lines[key] = {};
-	lines[key]['data'] = null;
-	lines[key]['colour'] = null;
+	
+	var id = "uid-" + c;
+	lines[id] = {};
+	lines[id]['label'] = key;
+	lines[id]['data'] = null;
+	lines[id]['colour'] = null;
 	
 	// for each data array in json_data.data
 	// create a 2d array format [[time, value], [time, value]...]
@@ -1228,19 +1231,50 @@ function time_stat(json_data){
 	    //console.log(parse_x)
 	    line_data.push([parse_x, json_data.data[key][i]]);	    
 	}
-	lines[key]["data"] = line_data;
-	lines[key]["colour"] = colour(c);
+	lines[id]["data"] = line_data;
+	lines[id]["colour"] = colour(c);
+	lines[id]['active'] = true;
 	c+=1;
     }
-    // draw wach line
+    // draw each line
+    var counter = 1;
     for(key in lines){
+	console.log(lines[key]['label'])
 	svg.append("path")
 	    .attr("class", "line")
-	    .attr("data-legend", key) 
+	    .attr('id', "line-" + key)
+	    .attr("data-legend", lines[key]['label']) 
 	    .style("stroke", function(){
 		return lines[key]['colour'];})
 	    .attr("d", valueline(lines[key]['data']));
+
+	
+	var rect = svg.append("rect")
+	    .attr("x", counter*35)
+	    .attr("y", 0-margin.top)
+	    .attr("fill", lines[key]['colour'])
+	    .attr("class", "data-rect")
+	    .attr("id", key)
+	    .attr("width", 30)
+	    .attr("height", 30)
+	    .on("mouseover", function() {
+		div.transition()
+		    .duration(200)
+		    .style("opacity", .9);
+		div
+		    .html("Click to add<br>or romove lines.")
+		    .style("left", (d3.event.pageX) + "px")
+		    .style("top", (d3.event.pageY - 28) + "px");
+	    })
+	    .on("mouseout", function() {
+		div.transition()
+		    .duration(500)
+		    .style("opacity", 0);
+	    });
+	counter += 1;
     }
+
+   
     svg.append("g") // Add the X Axis
 	.attr("class", "x axis")
 	.attr("transform", "translate(0," + height + ")")
@@ -1252,10 +1286,24 @@ function time_stat(json_data){
   
     legend = svg.append('g')
 	.attr("class", "legend")
-	//.attr("data-legend-pos", 790)
 	.attr("transform","translate(700, 30)")
         .style("font-size", "12px")
 	.call(d3.legend);
+
+    // tool tip
+    var div = d3.select("body").append("div")
+	.attr("class", "tooltip")
+	.style("opacity", 0);
     
 
+    $('.data-rect').mousedown(function(){
+	var active = lines[$(this).attr('id')]['active'] ? false : true;
+	var new_opacity = active ? 0 : 1;
+	d3.select('#line-' + $(this).attr('id'))
+	    .transition().duration(100)
+	    .style('opacity', new_opacity);
+	active ? $(this).attr("fill", "#eee") : $(this).attr("fill", lines[$(this).attr("id")]["colour"]);
+	lines[$(this).attr('id')]['active'] = active;
+	
+    });
 }
