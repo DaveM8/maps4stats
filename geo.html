@@ -30,8 +30,8 @@
       
       <div>
 	<div class="row">
-	  <div id="side" class="hidden-print col-xs-6 col-md-6 geo-side"></div>
-	  <div id="drawing" class="col-xs-12 col-md-6 geo-drawing"></div>
+	  <div id="side" class="hidden-print col-xs-6 col-md-4 geo-side"></div>
+	  <div id="drawing" class="col-xs-6 col-md-8 geo-drawing"></div>
 	</div>
       </div>
     </div>
@@ -44,6 +44,7 @@
       get_data();
       // on click events for sidebar
       $('.click-geo').click( function() {
+         console.log($(this).attr('id'));
          load_data(stat_by_set[$(this).attr('id')]);
          console.log("current_set " + $(this).attr('id'));
          get_data();

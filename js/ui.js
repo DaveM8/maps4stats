@@ -18,25 +18,22 @@ var nav_code = '<nav class="navbar navbar-fixed-top navbar-inverse">' +
 	'<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">'+
 	 ' <ul class="nav navbar-nav">'+
           '  <li class="active"><a href="geo.html">Maps<span class="sr-only">(current)</span></a></li>'+
-    ' <li><a href="base.html">Time</a></li>'+
-    '<li><a class="disabled"var.html">Feature</a></li>' +
+    ' <li><a href="base.html">Time</a></li>' +
     
-	    '<li class="dropdown disabled">'+
-	     ' <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Comming Soon<span class="caret"></span></a>'+
+	    '<li class="dropdown">'+
+	     ' <a href="todo.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Comming Soon<span class="caret"></span></a>'+
 	      '<ul class="dropdown-menu disabled" role="menu">'+
-		'<li><a href="#">Census Explorer</a></li>'+
-		'<li><a href="#">Farmers Friend</a></li>'+
-		'<li><a href="#"></a>cso view</li>'+
+		'<li><a href="todo.html#census">Census Explorer</a></li>'+
+		'<li><a href="todo.html">Farmers Friend</a></li>'+
 		'<li class="divider"></li>'+
-		'<li><a href="#">Search</a></li>'+
+		'<li><a href="todo.html">Search</a></li>'+
 		'<li class="divider"></li>'+
-		'<li><a href="#">About</a></li>'+
 	      '</ul>'+
 	    '</li>'+
             
 	  '</ul>'+
 	  
-	  '<ul class="nav navbar-nav navbar-right">'+
+	  '<ul class="nav navbar-nav navbar-left">'+
           
 	   ' <li class="dropdown">'+
 	     ' <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About <span class="caret"></span></a>'+
@@ -50,13 +47,13 @@ var nav_code = '<nav class="navbar navbar-fixed-top navbar-inverse">' +
 		'<li><a href="about.html">Tools Used</a></li>'+
 	      '</ul>'+
 	    '</li>'+
-          '</ul>'+
-	 	 ' <form class="navbar-form navbar-right disabled" role="search">'+
-            '<div class="form-group">'+
-             ' <input type="text" class="form-control disabled" placeholder="Search">'+
-            '</div>'+
-            '<button type="submit" class="btn btn-default disabled">Submit</button>'+
-	  '</form>'+
+         '</ul>'+
+	 	// ' <form class="navbar-form navbar-right disabled" role="search">'+
+            //'<div class="form-group">'+
+             //' <input type="text" class="form-control disabled" placeholder="Search">'+
+            //'</div>'+
+            //'<button type="submit" class="btn btn-default disabled">Submit</button>'+
+	  //'</form>'+
 	'</div>'+
       '</div>'+
     '</nav>';

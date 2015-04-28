@@ -74,7 +74,7 @@ div.tooltip {
 }
 #side{
     float: left;
-    width: 30%;
+   /*width: 30%;*/
     height: 100%;
     
 }
@@ -134,7 +134,7 @@ path {
     padding: 10px;
     clear: top;
     float:left;
-    width: 70%;
+    /*width: 70%;*/
     
 }
 
@@ -189,17 +189,11 @@ path {
 }
 
 li.collapsibleListOpen{
-  /*list-style-image:url('minus.png');*/
+  list-style-image:url('minus.png');
   cursor:pointer;
 }
 
 li.collapsibleListClosed{
   list-style-image:url('plus.png');
   cursor:pointer;
-}
-.geo-side{
-    width: 40%;
-}
-.geo-drawing{
-    width: 60%;
 }

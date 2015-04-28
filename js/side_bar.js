@@ -9,6 +9,7 @@ var stat_by_label = httpGetJson("json/stat_by_label.json");
 function side_by_geo(){
     // use a json file to create the side bar for viewing geographical data
     var count = 0;
+    var line_colour = null;
     var geo = httpGetJson("json/geo_by_stat.json");
 
     var set_names= httpGetJson("json/datasets.json");
@@ -25,7 +26,11 @@ function side_by_geo(){
 			
 	    for(var stat=0; stat < geo[area][set].length; stat++){
 		//console.log(geo[area][set][stat] + stat_by_label[geo[area][set][stat]]);
-		$("#file-"+ set).append('<li class="click-geo" id="' +
+		if((stat % 2) === 0)
+		    line_colour = "bg-success";
+		else
+		    line_colour = "bg-info";
+		$("#file-"+ set).append('<li class="click-geo list-unstyled ' + line_colour + '" id="' +
 						   geo[area][set][stat] + '">' +
 						   stat_by_label[geo[area][set][stat]] + '</li>');
 		                                   
@@ -45,7 +50,7 @@ function side_by_base(){
     var set_names= httpGetJson("json/datasets.json");
     //var stat_by_set = httpGetJson("json/stat_by_set.json");
     var unit_by_set = httpGetJson("json/unit_by_stat.json");
-    
+    var line_colour = null;
     var id_counter = 0;
 
     $("#side").append('<ul id="side-files" class="collapsibleList"></ul>');
@@ -53,10 +58,12 @@ function side_by_base(){
 	id_counter += 1;
 	$("#side-files").append('<li>' + i + '<ul class="collapsibleList" id="side-by-unit-'+ id_counter + '"></ul></li>');
 	for(var j=0; j<unit_by_set[i].length; j++){
-	    //console.log(set_names[stat_by_set[unit_by_set[i][j]]])
-	    //console.log(stat_by_set[unit_by_set[i][j]])
-	    //console.log(unit_by_set[i][j])
-	    $("#side-by-unit-"+id_counter).append('<li class="click-unit" id="' +
+	    if((j % 2) === 0)
+		line_colour = "bg-success";
+	    else
+		line_colour = "bg-info";
+	    
+	    $("#side-by-unit-"+id_counter).append('<li class="click-unit list-unstyled ' + line_colour + '" id="' +
 						  unit_by_set[i][j] +
 						  '">' + stat_by_label[[unit_by_set[i][j]]] + '</li>');
 	}
@@ -64,7 +71,8 @@ function side_by_base(){
     }
     CollapsibleLists.apply();
 }
-
+//* removing as part of applification
+/*
 function side_by_feature(){
     var set_names= httpGetJson("json/datasets.json");
     var files = httpGetJson("json/files.json");
@@ -81,6 +89,8 @@ function side_by_feature(){
     CollapsibleLists.apply();
     
 }
+*/
+
 /*   
 $('.click-geo').click( function() {
     load_data($(this).attr('id'));

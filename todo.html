@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>maps4stats</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
+   <script type="text/javascript" src="js/jquery.min.js"></script>
+   <script type="text/javascript" src="js/topojson.js"></script>
+   <script type="text/javascript" src="js/d3.min.js"></script>
+   <script type="text/javascript" src="js/bootstrap.min.js"></script>
+   <script type="text/javascript" src="js/backbone.js"></script>
+   <script type="text/javascript" src="js/json-stat.js"></script>
+   <script type="text/javascript" src="js/legend.js"></script>
+   <script type="text/javascript" src="js/ui.js"></script>
+
+   <script type="text/javascript" src="js/CollapsibleLists.compressed.js"></script>
+   <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body>
+    <div class="my-bs-nav"></div>
+    
+    <div class = "container-fluid">
+      <div id="about-project" class ="row">
+	<div class="col-md-3"></div>
+	<div class=" col-xs-12 col-md-7">
+	  <div role="tabpanel">
+
+	    <!-- Nav tabs -->
+	    <ul class="nav nav-tabs" role="tablist">
+	      <li role="presentation" class="active"><a href="#todo" aria-controls="home" role="tab" data-toggle="tab">Coming Soon</a></li>
+	      <li role="presentation"><a href="#census" aria-controls="profile" role="tab" data-toggle="tab">Census Explorer</a></li>
+	      <li role="presentation"><a href="#farmers" aria-controls="messages" role="tab" data-toggle="tab">Farmers Friend</a></li>
+	      <li role="presentation"><a href="#search" aria-controls="settings" role="tab" data-toggle="tab">Search</a></li>
+	    </ul>
+
+	    <!-- Tab panes -->
+	    <div class="tab-content">
+	      <div role="tabpanel" class="tab-pane active" id="todo">
+		<p>
+		  <strong>Coming Soon</strong><br>
+		  Click the tabs to view the details of site features that I'm currently working on.</p>
+	      </div>
+	      <div role="tabpanel" class="tab-pane" id="census">
+		<p>
+		  <strong>Census View</strong><br>
+		  Currently this app dose not display the Census data in a engaging meaningful way. Soon I'm going start exploring the Census data and develop some nice
+		  interactive visualizations to help all the people understand the patterns of our little island.</p>
+	      </div>
+	      <div role="tabpanel" class="tab-pane" id="farmers">
+		<p>
+		  <strong>Farmers Friend</strong><br>
+		  The Central Statistics Office holds a lot CD data about and related to agricultural output.
+		  Agriculture as one of our biggest exports and the fabric of rural Ireland deserves some attention.</p>
+		<p>
+		  I'm working on a dash board to display all of the agricultural data and to bring data from other relevant sources.
+		  This will act as a one stop shop for farmers to get data for all things from Prices to weather.</p>
+		
+	      </div>
+	      <div role="tabpanel" class="tab-pane" id="search">
+		<strong>Search</strong><br>
+		<p>
+		  Currently I am implementing a search feature which will allow you to search for key words, data-set names,
+		  Statistic names. Any word that is found in the meta data of the cso data. Just like <a href="http://www.google.ie">Google...</a>
+		</p>
+	      </div>
+	    </div>	   
+
+	  </div>
+	</div>
+      </div>
+      <div class="col-md-2"></div>
+    </div>
+    <!--<script type="text/javascript" src="js/stat-map.js"></script>-->
+    <!--<script type="text/javascript" src="js/side_bar.js"></script>-->
+    <script type="text/javascript">
+      make_nav_bar();
+   </script>
+</body>
+</html>
+

@@ -41,11 +41,12 @@ function create_lists(dss){
 					   'View Data Point','onePoint' ));
 
     // button to draw graphs by year
-    $('#button-frame').append(createButton('by-year','Bar Chart', 'barTime'));
-    $('#button-frame').append(createButton('scatter-by-year', "Line Plot", "scatterTime"));
+    //$('#button-frame').append(createButton('by-year','Bar Chart', 'barTime'));
+    //$('#button-frame').append(createButton('scatter-by-year', "Line Plot", "scatterTime"));
     $('#button-frame').append(createButton('map-all-area', 'Map Data', 'get_data'));
-    $('#button-frame').append(createButton('county-bar', 'County by Bar', 'countyBar'));
-    $('#button-frame').append(createButton('stat-bar', 'Bar', 'statBar'));
+    //$('#button-frame').append(createButton('county-bar', 'County by Bar', 'countyBar'));
+    //$('#button-frame').append(createButton('stat-bar', 'Bar', 'statBar'));
+    //$('#button-frame').append(creatButton('lines', 'Line Chart', 
    
     
     
@@ -1018,9 +1019,6 @@ function get_set_code(stat_code){
     return getjsonStat(base+set_code);
 }
 
-function md(id){
-    
-}
 //stat_by_time("AJA01C1");
 //stat_by_time("THA16C1");
 function stat_by_time(stat_code){
@@ -1137,7 +1135,7 @@ function time_stat(json_data){
     //$(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
 
     var margin = {top: 50, right: 200, bottom: 30, left: 30},
-	width = 880 - margin.left - margin.right,
+	width = 930 - margin.left - margin.right,
 	height = 400 - margin.top - margin.bottom;
     // format for monthly cso statistics
     var format = what_format(json_data.time_base);
@@ -1240,7 +1238,7 @@ function time_stat(json_data){
 	c+=1;
     }
     // draw each line
-    var counter = 1;
+    var counter = 0; // used to position the add/remove line "rect"s
     for(key in lines){
 	console.log(lines[key]['label'])
 	svg.append("path")
@@ -1294,7 +1292,7 @@ function time_stat(json_data){
   
     legend = svg.append('g')
 	.attr("class", "legend")
-	.attr("transform","translate(700, 30)")
+	.attr("transform","translate(730, 10)")
         .style("font-size", "12px")
 	.call(d3.legend);
 

@@ -24,6 +24,10 @@ handlers:
 - url: /geo.html
   static_files: geo.html
   upload: geo.html
+- url: /todo.html
+  static_files: todo.html
+  upload: todo.html
+
 - url: /
   static_files: index.html
   upload: index.html
