@@ -91,6 +91,16 @@ var countys = ["Carlow","Dublin","Kildare",
 			 "Donegal","Monaghan"];
 
 
+var names = ["Province or County", "Constituency",
+		  "Province County or City", "Garda Region",
+		  "Regional Authority", "County and Region",
+		  "Province County or City","Place of Usual Residence",
+		  "Location of Place of Work","County and City",
+		  "Area of Residence of Bride","County of",
+		  "County of Usual Residence","County",
+		  "Towns by Size", "Region", "Regional Authority",
+		  "Garda Division", "Local Authority", "Region and County"];
+     
 function byCounty(){
     // return the data for the current statistic for each county
     // It will be hard to make this very robust because the cso api
@@ -99,15 +109,6 @@ function byCounty(){
     // data sets which I know will work
     // this is a possible complete list of Irish geographical
     // reference in the cso data
-    
-    var names = [ "Province or County", "Constituency",
-		  "Province County or City", "Garda Region",
-		  "Regional Authority", "County and Region",
-		  "Province County or City","Place of Usual Residence",
-		  "Location of Place of Work","County and City",
-		  "Area of Residence of Bride","County of",
-		  "County of Usual Residence","County",
-		  "Towns by Size", "Region", "Local Authority" ];
     
     var geoName = null;
     var geoIndex = null;
@@ -677,16 +678,7 @@ function get_data(){
 
     // used to find the geo field in the dataset
     // TODO deal with Local Authority edge case
-     var names = ["Province or County", "Constituency",
-		  "Province County or City", "Garda Region",
-		  "Regional Authority", "County and Region",
-		  "Province County or City","Place of Usual Residence",
-		  "Location of Place of Work","County and City",
-		  "Area of Residence of Bride","County of",
-		  "County of Usual Residence","County",
-		  "Towns by Size", "Region", "Regional Authority",
-		  "Garda Division", "Local Authority", "Region and County"];
-    
+     
     var geoName = null;
     var geoIndex = null;
     var stat = String(ds.role.metric);
@@ -916,17 +908,23 @@ function draw_all_map(data, main, map_file, area_id, labels){
     // takes: data a dict with the name of the area as key
     // 	      and the value to map as value
     //     
-
+    var legend_map = {}; // use colour as key and the county name as value
+    
     for(var key in data){
 	data[key] = Math.log(data[key]+1);
     }
-    var margin = {top: 20, right: 10, bottom: 20, left: 20},
-	width = 600 - margin.left - margin.right,
+    var margin = {top: 20, right: 10, bottom: 20, left: 200},
+	width = 800 - margin.left - margin.right,
 	height = 600 - margin.top - margin.bottom;
-
+    // set the colours for the map
+    var map_colours = ["rgb(237,248,233)", "rgb(186,228,179)",
+		       "rgb(116,196,118)", "rgb(49,163,84)","rgb(0,109,44)"];
+    // use the colours as keys for the ledgend
+    for(var value in map_colours){
+	legend_map[map_colours[value]] = [];
+    }
     var color = d3.scale.quantize()
-	.range(["rgb(237,248,233)", "rgb(186,228,179)",
-		"rgb(116,196,118)", "rgb(49,163,84)","rgb(0,109,44)"]);
+	.range(map_colours);
     
     
     var projection = d3.geo.albers()
@@ -963,6 +961,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	}
 	color.domain([d3.min(min_max), d3.max(min_max)]);
 	var text_color = null;
+	var current_colour = null;
 	svg.append("g")
             .attr("class", "feature feature--county")
             .selectAll("path")
@@ -975,12 +974,13 @@ function draw_all_map(data, main, map_file, area_id, labels){
 		var value = d.properties['value'];
 		if(value){
 		    // the value exsits
-		    return color(value);
+		    return color(value); 
 		}else{
 		    // no value exists
 		    return "#eee";
 		}
-	    });
+	    })
+	    .attr('data-legend',function(d){ return  d.properties[area_id]; });
 
 	svg.append("path")
             .datum(topojson.mesh(geo_data, geo_data.objects.geo_area, function(a, b)
@@ -988,8 +988,9 @@ function draw_all_map(data, main, map_file, area_id, labels){
             .attr("class", "boundary boundary--county")
             .style("stroke-width", "1px")
             .attr("d", path);
+
+
 	
-     
 	svg.selectAll("text")
             .data(area.features)
             .enter().append("text")
@@ -1008,9 +1009,20 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	    .style("text-decoration", "underline")
 	    .text(myStr);
 
+    svg.append('g')
+	.attr("class", "legend")
+	.attr("transform", "translate(50, 30)")
+	.style("font-size", "16px")
+	.call(d3.legend);
     });
+
 }
 
+function is_index_geo(){
+    // return true if the id pased in a geographical region
+    // THis is my third time doing this so I'm seperating it out
+    
+}
 function get_set_code(stat_code){
     // take a Statistic code and return the data set
     var stat_by_set = httpGetJson("json/stat_by_set.json");
@@ -1120,7 +1132,7 @@ function stat_by_time(stat_code){
 function time_stat(json_data){
     // take a json file with time series data and
     // draw all of the variables on a line chart
-    console.log(json_data['n'])
+    console.log("Number of Lines " + json_data['n'])
     if(json_data["time"].length < 2){
 	alert("Data not time series");
 	return -1;
@@ -1234,7 +1246,7 @@ function time_stat(json_data){
 	}
 	lines[id]["data"] = line_data;
 	lines[id]["colour"] = colour(c);
-	lines[id]['active'] = true;
+	lines[id]['active'] = 1;
 	c+=1;
     }
     // draw each line
@@ -1301,9 +1313,9 @@ function time_stat(json_data){
 	.attr("class", "tooltip")
 	.style("opacity", 0);
     
-
+    var active = true;
     $('.data-rect').mousedown(function(){
-	var active = lines[$(this).attr('id')]['active'] ? false : true;
+	active = lines[$(this).attr('id')]['active'] ? false : true;
 	var new_opacity = active ? 0 : 1;
 	d3.select('#line-' + $(this).attr('id'))
 	    .transition().duration(100)

@@ -20,8 +20,8 @@
 		items[self.attr("data-legend")] = {
 		    pos : self.attr("data-legend-pos") || this.getBBox().y,
 		    // edit for use on mulit line chart
-		    color : self.style("stroke")
-		    //color : self.attr("data-legend-color") != undefined ? self.attr("data-legend-color") : self.style("fill") != 'none' ? self.style("fill") : self.style("stroke")
+		    //color : self.style("stroke")
+		    color : self.attr("data-legend-color") != undefined ? self.attr("data-legend-color") : self.style("fill") != 'none' ? self.style("fill") : self.style("stroke")
 		};
 	    });
 		
@@ -41,7 +41,7 @@
 		.attr("cy",function(d,i) { return i-0.25+"em";})
 		.attr("cx",0)
 		.attr("r","0.4em")
-		.style("fill",function(d) { console.log(d.value.color); return d.value.color});
+		.style("fill",function(d) { /*console.log(d.value.color);*/ return d.value.color});
 	    // Reposition and resize the box
 	    var lbbox = li[0][0].getBBox();
 	    lb.attr("x",(lbbox.x-legendPadding))
