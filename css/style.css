@@ -157,7 +157,7 @@ path {
     stroke-width: .001px;
 }    
 .map text{
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Ubuntu", Helvetica, Arial, sans-serif;
     font-size: 10px;
     text-anchor: middle;
 }

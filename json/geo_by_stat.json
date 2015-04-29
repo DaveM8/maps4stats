@@ -1,67 +1,4 @@
 {
-    "Area of Residence of Bride":{
-        "VSA64":[
-            "VSA64C2",
-            "VSA64C3",
-            "VSA64C1",
-            "VSA64C4",
-            "VSA64C5"
-        ]
-    },
-    "Constituency":{
-        "B0108":[
-            "B0108C1",
-            "B0108C3",
-            "B0108C2",
-            "B0108C5",
-            "B0108C4"
-        ],
-        "BDR03":[
-            "BDR03C5",
-            "BDR03C4",
-            "BDR03C1",
-            "BDR03C3",
-            "BDR03C2"
-        ],
-        "C0108":[
-            "C0108C1",
-            "C0108C2",
-            "C0108C3",
-            "C0108C4",
-            "C0108C5",
-            "C0108C6"
-        ],
-        "CD117":[
-            "CD117C4",
-            "CD117C5",
-            "CD117C6",
-            "CD117C1",
-            "CD117C2",
-            "CD117C3"
-        ],
-        "CDD03":[
-            "CDD03C4",
-            "CDD03C2",
-            "CDD03C3",
-            "CDD03C1"
-        ],
-        "CDP03":[
-            "CDP03C2",
-            "CDP03C3",
-            "CDP03C1",
-            "CDP03C6",
-            "CDP03C4",
-            "CDP03C5"
-        ],
-        "CDR03":[
-            "CDR03C4",
-            "CDR03C5",
-            "CDR03C6",
-            "CDR03C1",
-            "CDR03C2",
-            "CDR03C3"
-        ]
-    },
     "County":{
         "B0403":[
             "B0403C1"
@@ -474,62 +411,6 @@
     "Garda Region":{
         "CJQ02":[
             "CJQ02C1"
-        ]
-    },
-    "Local Authority":{
-        "BHA01":[
-            "BHA01C1",
-            "BHA01C2",
-            "BHA01C3",
-            "BHA01C4"
-        ],
-        "BHQ01":[
-            "BHQ01C1",
-            "BHQ01C2",
-            "BHQ01C3",
-            "BHQ01C4"
-        ],
-        "HSA02":[
-            "HSA02C1"
-        ],
-        "HSA03":[
-            "HSA03C1"
-        ],
-        "HSA04":[
-            "HSA04C1"
-        ],
-        "HSA05":[
-            "HSA05C2",
-            "HSA05C1"
-        ],
-        "HSA07":[
-            "HSA07C11",
-            "HSA07C10",
-            "HSA07C13",
-            "HSA07C12",
-            "HSA07C15",
-            "HSA07C14",
-            "HSA07C08",
-            "HSA07C09",
-            "HSA07C06",
-            "HSA07C07",
-            "HSA07C04",
-            "HSA07C05",
-            "HSA07C02",
-            "HSA07C03",
-            "HSA07C01"
-        ],
-        "HSA11":[
-            "HSA11C1"
-        ],
-        "HSM12":[
-            "HSM12C1"
-        ],
-        "HSQ11":[
-            "HSQ11C1"
-        ],
-        "NRA02":[
-            "NRA02C1"
         ]
     },
     "Location of Place of Work":{
@@ -1866,12 +1747,9 @@
         "AAA01":[
             "AAA01C1"
         ],
-        "AAA01.json":[
+        "AAA01":[
             "AAA01C1"
-        ],
-        "AAA01.json~":[
-            "AAA01C1"
-        ],
+	],
         "AAA03":[
             "AAA03C1"
         ],

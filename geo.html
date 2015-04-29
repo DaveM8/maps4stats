@@ -44,9 +44,11 @@
       get_data();
       // on click events for sidebar
       $('.click-geo').click( function() {
-         console.log($(this).attr('id'));
-         load_data(stat_by_set[$(this).attr('id')]);
-         console.log("current_set " + $(this).attr('id'));
+         var set_id = stat_by_set[$(this).attr('id')];
+         console.log("current_set " + set_id);
+             load_data(set_id);
+		      
+         console.log("current_stat " + $(this).attr('id'));
          get_data();
          return false;
       });

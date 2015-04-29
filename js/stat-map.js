@@ -4,6 +4,8 @@
 
 // used to give an id to each graph we draw
 var graphCounter=0;
+// store what data set is currently loaded to prevent dataset being reloaded
+var current_dataset = null;
 // create_lists a function which takes a jsonStat object and populates
 // elements with all the labels in the data set
 function create_lists(dss){
@@ -687,13 +689,13 @@ function get_data(){
     var time = String(ds.role.time); // the time peirod of the data
     //var xlab = role; // xlabel of graph to be drawen
     var ylab = String(ds.role.metric.label); // ylabel of graph to be drawen
-    var statIndex = null;
+    var stat_index = null;
     var found_flag = false;
     var labels = [];
     
     for(var i=0; i<ids.length; ++i){
 	if (ids[i] == stat){
-	    statIndex = i;
+	    stat_index = i;
 	}
 	for(var j=0; j<names.length; ++j){
 	    if( String(ids[i]) === String(names[j])){
@@ -709,7 +711,7 @@ function get_data(){
 	alert("No Geographical Data in set");
 	return false;
     }
-    
+    //main = ds.Dimension(stat_index).Category(stat_code).label;
     var cube = [];
     $('#drop-downs :selected').each(function(i, selected){
 	cube.push(parseInt(selected.value));
@@ -913,9 +915,9 @@ function draw_all_map(data, main, map_file, area_id, labels){
     for(var key in data){
 	data[key] = Math.log(data[key]+1);
     }
-    var margin = {top: 20, right: 10, bottom: 20, left: 200},
-	width = 800 - margin.left - margin.right,
-	height = 600 - margin.top - margin.bottom;
+    var margin = {top: 40, right: 10, bottom: 20, left: 100},
+	width = 600 - margin.left - margin.right,
+	height = 660 - margin.top - margin.bottom;
     // set the colours for the map
     var map_colours = ["rgb(237,248,233)", "rgb(186,228,179)",
 		       "rgb(116,196,118)", "rgb(49,163,84)","rgb(0,109,44)"];
@@ -929,7 +931,7 @@ function draw_all_map(data, main, map_file, area_id, labels){
     
     var projection = d3.geo.albers()
       .rotate([0,0])
-      .center([-9.3, 53.2])
+      .center([-8.4, 53.2])
       .scale(7500)
       .translate([width/2, height/2])
       .precision(.1);
@@ -979,8 +981,8 @@ function draw_all_map(data, main, map_file, area_id, labels){
 		    // no value exists
 		    return "#eee";
 		}
-	    })
-	    .attr('data-legend',function(d){ return  d.properties[area_id]; });
+	    });
+	    //.attr('data-legend',function(d){ return  d.properties[area_id]; });
 
 	svg.append("path")
             .datum(topojson.mesh(geo_data, geo_data.objects.geo_area, function(a, b)
@@ -1007,13 +1009,14 @@ function draw_all_map(data, main, map_file, area_id, labels){
 	    .attr("text-anchor", "middle")
 	    .attr("font-size", "24px")
 	    .style("text-decoration", "underline")
+	    .style("text-size", "12px")
 	    .text(myStr);
 
-    svg.append('g')
+    /*svg.append('g')
 	.attr("class", "legend")
 	.attr("transform", "translate(50, 30)")
 	.style("font-size", "16px")
-	.call(d3.legend);
+	.call(d3.legend);*/
     });
 
 }
