@@ -21,7 +21,7 @@ var nav_code = '<nav class="navbar navbar-fixed-top navbar-inverse">' +
 	 ' <ul class="nav navbar-nav">'+
           '  <li class="active"><a href="geo.html">Maps<span class="sr-only">(current)</span></a></li>'+
     ' <li><a href="base.html">Time</a></li>' +
-    
+    '<li><a href="https://github.com/davem8/maps4stats">Source</a></li>'+
 	    '<li class="dropdown">'+
 	     ' <a href="todo.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Comming Soon<span class="caret"></span></a>'+
 	      '<ul class="dropdown-menu disabled" role="menu">'+

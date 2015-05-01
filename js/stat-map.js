@@ -56,29 +56,12 @@ function create_lists(dss){
     // add a submit button to display the data  
     $('#button-frame').append(createButton('my-submit',
 					   'View Data Point','onePoint' ));
-
-    // button to draw graphs by year
-    //$('#button-frame').append(createButton('by-year','Bar Chart', 'barTime'));
-    //$('#button-frame').append(createButton('scatter-by-year', "Line Plot", "scatterTime"));
-    $('#button-frame').append(createButton('map-all-area', 'Map Data', 'get_data'));
-    //$('#button-frame').append(createButton('county-bar', 'County by Bar', 'countyBar'));
-    //$('#button-frame').append(createButton('stat-bar', 'Bar', 'statBar'));
-    //$('#button-frame').append(creatButton('lines', 'Line Chart', 
+    $('#button-frame').append(createButton('map-all-area', 'Map Data', 'get_data')); 
    
     
     
 }
 
-function list_dataset(){
-    var dataset_list = httpGetJson("json/datasets.json");
-    $('#header').prepend(HTMLaddSelect.replace('%%data%%', "dataset"));
-    for( var i in dataset_list){
-	var option_box = HTMLaddOption.replace('%%value%%', i);
-	option_box = option_box.replace('%%id%%', i);
-	$("#dataset").append(option_box.replace('%%text%%', String(dataset_list[i])));
-    }
-}
-   
 function createButton(id, text, action){
     var myButton = HTMLbutton.replace('%%data%%', id);
     myButton = myButton.replace('%%display%%', text);
@@ -96,16 +79,6 @@ function onePoint(){
     //ds.Data(cube).value
     alert(value);
 }
-var countys = ["Carlow","Dublin","Kildare",
-			 "Kilkenny","Laois","Longford",
-			 "Louth","Meath","Offaly",
-			 "Westmeath","Wexford","Wicklow",
-			 "Clare","Cork","Kerry","Limerick",
-			 "North Tipperary",
-			 "South Tipperary","Waterford",
-			 "Galway","Leitrim","Mayo",
-			 "Roscommon","Sligo","Cavan",
-			 "Donegal","Monaghan"];
 
 
 var names = ["Province or County", "Constituency",
@@ -118,383 +91,29 @@ var names = ["Province or County", "Constituency",
 		  "Towns by Size", "Region", "Regional Authority",
 		  "Garda Division", "Local Authority", "Region and County"];
      
-function byCounty(){
-    // return the data for the current statistic for each county
-    // It will be hard to make this very robust because the cso api
-    // dose not include geo information
-    // in the web ready app I'll have just a selection of
-    // data sets which I know will work
-    // this is a possible complete list of Irish geographical
-    // reference in the cso data
-    
-    var geoName = null;
-    var geoIndex = null;
-    var stat = String(ds.role.metric);
-    var ids = ds.id;
-    var main = String(ds.label); // title of graph to be drawn
-    var role = String(ds.role.time); // the time Poirot of the data
-    var xlab = role; // xlabel of graph to be drawen
-    var ylab = String(ds.role.metric.label); // ylabel of graph to be drawen
-    var statIndex = null;
-    var found_flag = false;
-    
-    for(var i=0; i<ids.length; ++i){
-	if (ids[i] == stat){
-	    statIndex = i;
-	}
-	for(var j=0; j<names.length; ++j){
-	    if( String(ids[i]) === String(names[j])){
-		geoName = ids[i];
-		geoIndex = i;
-		found_flag = true;
-		break;
-	    }
-	}
-	
-    }
-    if (!found_flag){
-	alert("No Geographical Data in set");
-	return false;
-    }
-    var cube = [];
-    $('#drop-downs :selected').each(function(i, selected){
-	cube.push(parseInt(selected.value));
-    });
-    // TODO needs improving
-    var first_Tipp = null;
-    var countyData = [];
-    var countyLabel = [];
-    for(i=0; i<ds.Dimension(geoName).length; ++i){
-	cube[geoIndex] = i;
-	// only get the data for the 26 countys
-	var check_county = String(ds.Dimension(geoName).Category(i).label);
-	//
-	// not very efficint
-	for (j=countys.length; j >= 0; --j){
-	    // hack for dealing with Tipperary north + south
-	    // add them together maybe get the mean???
-	    if(check_county.match(".*Tipperary$")){
-		if  (! first_Tipp){
-		    first_Tipp += parseFloat(ds.Data(cube).value);
-		    countyData.push(first_Tipp);
-		    countyLabel.push("Tipperary");
-		    continue;
-		} else{
-		    first_Tipp = parseFloat(ds.Data(cube).value);
-		    continue;
-		}
-	    }
-	    if (check_county == countys[j]){
-		countyData.push(parseFloat(ds.Data(cube).value));
-		countyLabel.push(String(ds.Dimension(geoName).Category(i).label));
-		continue;
-	    }
-	}
-    }
-        // adjust the base of the data set to help with comparisons
-    var base = ds.Dimension(stat).Category(cube[statIndex]).unit['Base'];
-
-    var set = {};
-    set["y"] = countyData;
-    set["x"] = countyLabel;
-    set["base"] = base;
-    set["main"] = main;
-    set["xlab"] = xlab;
-    set["xlab"] = ylab;
-    set["role"] = role;
-    set["region"] = geoName;
-
-    return set;		
-}
-
-function byStat(){
-    // return a data structure with all of the
-    // current statistics
-    // draw a nice bar chart for each statistic
-
-    var ids = ds.id;
-    var stat_index = null;
-    var main = String(ds.label);
-
-    //var time_var = String(ds.role.time);
-    var stat =  String(ds.role.metric);
-    
-    for(var i in ids){
-	if (ids[i] === stat){
-	    stat_index = i;
-	}
-    }
-
-    var cube =[];
-    $('#drop-downs :selected').each(function(i, selected){
-	cube.push(parseInt(selected.value));
-    });
-    var stats = [];
-    var labels = [];
-    var base = [];
-    var stat_base = {};
-    for(i =0; i<ds.Dimension(stat).length; i++){
-	cube[stat_index] = i;
-	var unit = ds.Dimension(stat).Category(i).unit;
-	stats.push(parseFloat(ds.Data(cube).value));
-	labels.push(ds.Dimension(stat).Category(i).label);
-    }
-  
-    
-    var set = {};
-    set["y"] = stats;
-    set['x'] = labels;
-    set['main'] = main;
-    //set['unit'] = base;
-    //set["main"] = 
-    return set;
-}
-
-function byTime(){
-    // select the data foe each time period for all selected options
-
-    var ids = ds.id;
-    var yearIndex = null;
-    var statIndex = null;
-    
-    var main = String(ds.label); // title of graph to be drawen
-       
-    var role = String(ds.role.time); // the time period of the data
-    var stat = String(ds.role.metric);
-    var xlab = role; // xlabel of 
-    // get the index of the time period
-    // and the current Satittic
-    // these are part of the role function 
-    for(var k in ids){
-	if (ids[k] === role){
-	    yearIndex = k;
-	}
-	if (ids[k] == stat){
-	    statIndex = k;
-	}
-    }
-    // put the index of each metric the user has selected
-    // this array of indexes can then be past to json-stat
-    // tool kit to return the value
-    var cube = [];
-    $('#drop-downs :selected').each(function(i, selected){
-	
-	cube.push(parseInt(selected.value));
-    });
-   
-    var years = [];
-    var yearLabel = [];
-    var yearData = [];
-    
-    var ylab = String(ds.Dimension(stat).Category(cube[statIndex]).label);
-    
-    for(j=0;  j<ds.Dimension(role).length; j++){
-	cube[yearIndex] = j;
-	yearData.push(parseInt(ds.Data(cube).value));
-	yearLabel.push(ds.Dimension(role).Category(j).label);
-    }
-    
-    // remove all values which are NaN
-    // if a data point dose not exist it is stored as .. in the jsonstat files
-    // JavaScript will interpret as Nan remove any NaN values before plotting
-    var nans = [];
-    // save the index of all NaN values
-    for(var j in yearData)
-	if(isNaN(yearData[j]))
-	    nans.push(j);
-    // remove all the nan values from the data set
-    for(j = nans.length-1; j>=0; j--){
-	yearData.splice(j, 1); // remove each NaN value starting at the end
-	yearLabel.splice(j, 1);
-    }
-    var base = ds.Dimension(stat).Category(cube[statIndex]).unit['Base'];
-    var set = {};
-    set["y"] = yearData;
-    set["x"] = yearLabel;
-    set["unit"] = base;
-    set["main"] = main;
-    set["ylab"] = ylab;
-    set["xlab"] = xlab;
-    set["role"] = role;
-    return set;
-}
-
-function barChart(data){
-
-    var margin = {top: 20, right: 10, bottom: 30, left: 20},
-	w = 770 - margin.left - margin.right,
-	h = 400 - margin.top - margin.bottom;
-    
-    graphCounter += 1;
-    // grab the #drawing section and add a new div for this graph
-    $("#drawing").prepend(HTMLgraphDiv.replace('%%data%%', graphCounter));
-    currentDiv = "#graph-id" + String(graphCounter);
-    $(currentDiv).append(HTMLgraphTitle.replace("%%main%%", data.main));
-    // use an ordinal scale on the x axis for each bar
-    var xScale = d3.scale.ordinal()
-                   .domain(d3.range(data.x.length))
-                   .rangeRoundBands([60, w-margin.left - margin.right], 0.05);
-    
-    // use a linear scale for the heights of the bars
-    var yScale = d3.scale.linear()
-			 .domain([0, d3.max(data.y)])
-                         .range([0, h-margin.top-margin.bottom]);
-
-    var yAxisScale = d3.scale.linear()
-                       .domain([0, d3.max(data.y)])
-                       .range([h, 0]);
-
-    var svg = d3.select(currentDiv)
-        .append("svg")
-        .attr("width", w - margin.left - margin.right)
-        .attr("height", h - margin.top - margin.bottom);
-
-    svg.selectAll("rect")
-        .data(data.y)
-        .enter()
-        .append("rect")
-        .attr("x", function(d, i) { return xScale(i);})
-        .attr("y", function(d) {
-	    return h - margin.top - margin.bottom - yScale(d); })
-        .attr("width", xScale.rangeBand())
-        .attr("height", function(d){ return yScale(d); })
-	.attr("fill", "teal");
-    /*
-                 .attr("fill", function(d) {
-		     var col = 0;
-		     if(d > 255){
-			 col = Math.round(yScale(d));
-		         col =  255 - col;
-			 }
-		     else
-			 col = d;
-		     return "rgb(0, 0, " + col + ")";
-		 });*/
-    // label at bottom of graph
-    svg.selectAll("text")
-       .data(data.y)
-       .enter()
-       .append("text")
-	.text(function(d, i) {return data.x[i]; })
-       .attr("text-anchor", "middle")
-       .attr("x", function(d, i) { 
-	   return xScale(i) + xScale.rangeBand() / 2;
-       })
-	. attr("y", function(d) { return h- margin.top - margin.bottom;})
-	.attr("font-family", "sans-serif")
-	.attr("font-size", "12px")
-	.attr("fill", "white")
-	.attr("text-anchor", "middle");
-
-    svg.append("text")
-	.attr("x", (w/2))
-	.attr("y", 0- (margin.top /2))
-	.attr("class", "bar-chart-title")
-	.attr("text-anchor", "middle")
-	.attr("font-size", "16px")
-	.style("text-decoration", "underline")
-	.text(data.ylab);
-    // x-axis label
-    svg.append("text")
-	.attr("transform",
-	      "translate(" + (w/2) + "," +
-	      (h+margin.bottom)+ ")")
-	.style("text-anchor", "middle")
-	.text(data.xlab);
-
-    // y-axis lable
-    svg.append("text")
-	.attr("transform", "rotate(-90)")
-	.attr("y", 0-margin.left)
-	.attr("x", 0-(h/2))
-	.attr("dy", "1em")
-	.style("test-anchor", "middle")
-	.text(data.ylab);
-	      
-    var yAxis = d3.svg.axis()
-                      .scale(yAxisScale)
-                       .tickFormat(d3.format("s")) 
-                      .orient("left");
-    svg.append("g")
-       .attr("class", "axis")
-       .attr("transform", "translate(" + 40 + "," + 0 + ")")
-       .call(yAxis);
-}
-
 //////////////////////
 var ds = getjsonStat();
 ds=ds.Dataset(0);
 //MAIN
 //list_dataset();
 create_lists(ds);
-
-$("#info-map").on('change', function(){
-    new_data_set("#info-map");
-    countyBar();
-});
-		  
-$("#dataset").on('change', function(){
-    new_data_set("#dataset");
-});
-//////////////////////////
-function new_data_set(change_id){
-    var base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
-    $(change_id + ' :selected').each(function(i, selected){
-	dataset_name = $(change_id).val();
+ 
+function load_data(dataset_name){
+    // take a cso file ref eg AA045 and load the file
+    console.log("current set " + dataset_name);
+    if(current_dataset === dataset_name){
+	// do not reload the same set
+    } else{
+	var base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
 	ds = getjsonStat(base + dataset_name);
 	ds = ds.Dataset(0);
 	$(".drop-data").remove();
 	$("#button-frame").remove();
 	create_lists(ds);
-    });
-}
-function load_data(dataset_name){
-    // take a cso file ref eg AA045 and load the file
-    var base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
-    ds = getjsonStat(base + dataset_name);
-    ds = ds.Dataset(0);
-    $(".drop-data").remove();
-    $("#button-frame").remove();
-    create_lists(ds);
-}
-
-// function dose not appear to be in use
-/*
-function getNames(examples){
-    // load datasets.json and look up the names
-    datasets = httpGetJson("json/datasets.json");
-    with_names = {};
-    for(var i=0; i<examples.length; ++i){
-	with_names[examples[i]] = datasets[examples[i]];
-    }
-    return with_names;
-}
-*/
-
-function barTime(){
-    data = byTime();
-    barChart(data);
-}
-
-function statBar(){
-    data = byStat();
-    barChart(data);
-}
-
-function countyBar(){
-    data = byCounty();
-    for(line in data)
-	console.log(data[line])
-    if(data){
-	barChart(data);
+	current_dataset = dataset_name;
     }
 }
 
-function scatterTime(){
-    data = byTime();
-    //scatter(data);
-    simple_line(data);
-}
 function getjsonStat(url){
     // return a json stat object from cso.ie
     // if no url in defined return an example set
@@ -584,123 +203,19 @@ function parseDate(str_date, format){
     }
 }
 */
-function simple_line(data){
-    //alert(data.role)
-    graphCounter += 1;
-    // grab the #drawing section and add a new div for this graph
-    $("#drawing").prepend(HTMLgraphDiv.replace('%%data%%', graphCounter));
-    var currentDiv = "#graph-id" + String(graphCounter);
-    $(currentDiv).append(HTMLgraphTitle.replace("%%main%%", data.main));
 
-    var margin = {top: 30, right: 20, bottom: 50, left: 100},
-	width = 800 - margin.left - margin.right,
-	height = 330 - margin.top - margin.bottom;
-    // format for cso statistic
-    var format = what_format(data.role);
-    //var date_format = d3.time.format(format);
-    var parseDate = d3.time.format(format).parse;
-    var xScale = d3.time.scale().range([0, width]);
-    var yScale = d3.scale.linear().range([height, 0]);
-    
-    var valueline = d3.svg.line()
-	.x(function(d) { return xScale(d[0]); })
-	.y(function(d) { return yScale(d[1]); });
-    
-    var svg = d3.select(currentDiv)
-	.append("svg")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform",
-	      "translate(" + margin.left + "," + margin.top + ")");
-    
-    var my_data = [];
-    for(i=0; i<data.x.length; ++i){
-	var data_line = [];
-	var parse_date = parseDate(String(data.x[i]), format); 
-	console.log(parse_date);
-	data_line.push(parse_date);
-	data_line.push(data.y[i]);
-	my_data.push(data_line);
-	//console.log(data_line)
-    }
-    for(var i in my_data){
-	//console.log(my_data[i][0] + " " + my_data[i][1])
-    }
-    //for(var i =0; i<my_data.length; ++i){
-	//console.log(my_data[i]);
-    //}
-    
-    var xAxis = d3.svg.axis()
-	.scale(xScale)
-	.tickFormat(d3.time.format(format))
-	.orient("bottom").ticks(10);
-    
-    var yAxis = d3.svg.axis()
-	.scale(yScale)
-	.tickFormat(d3.format("s"))
-	.orient("left").ticks(data.y.lenth);
-    
-    // Scale the range of the data
-    xScale.domain(d3.extent(my_data, function(d) { return d[0];}));
-    yScale.domain([0, d3.max(my_data, function(d) { return d[1]; })]);
-
-    svg.append("text")
-	.attr("x", (width/2))
-	.attr("y", 0- (margin.top /2))
-	.attr("class", "line-chart-title")
-	.attr("text-anchor", "middle")
-	.attr("font-size", "16px")
-	.style("text-decoration", "underline")
-	.text(data.ylab);
-
-    // x-axis label
-    svg.append("text")
-	.attr("transform",
-	      "translate(" + (width/2) + "," +
-	      (height+margin.bottom)+ ")")
-	.style("text-anchor", "middle")
-	.text(data.xlab);
-
-    // y-axis lable
-    svg.append("text")
-	.attr("transform", "rotate(-90)")
-	.attr("y", 0-margin.left)
-	.attr("x", 0-(height))
-	.attr("dy", "1em")
-	.style("test-anchor", "middle")
-	.text(data.ylab);
-
-    
-    svg.append("path")
-	.attr("class", "line")
-	.attr("d", valueline(my_data));
-
-    svg.append("g") // Add the X Axis
-	.attr("class", "x axis")
-	.attr("transform", "translate(0," + height + ")")
-	.call(xAxis);
-        
-    svg.append("g")
-	.attr("class", "y axis")
-	.call(yAxis);
-
-}
-
-function get_data(){
-    // takes a json-stat object and draws maps
+function get_data(stat_code){
+    // draw a map
     // by all of the different geographical areas
     // on the map
     // county; Provence; region; town land; garda region
 
-    // used to find the geo field in the dataset
-    // TODO deal with Local Authority edge case
-     
     var geoName = null;
     var geoIndex = null;
     var stat = String(ds.role.metric);
     var ids = ds.id;
     var main = String(ds.label); // title of graph to be drawen
+    //console.log(String(ds.label))
     var time = String(ds.role.time); // the time peirod of the data
     //var xlab = role; // xlabel of graph to be drawen
     var ylab = String(ds.role.metric.label); // ylabel of graph to be drawen
@@ -726,14 +241,33 @@ function get_data(){
 	alert("No Geographical Data in set");
 	return false;
     }
-    //main = ds.Dimension(stat_index).Category(stat_code).label;
+    
+    var button_click = null;
+    var stat_code_index = null;
+    if(stat_code === "undefined"){
+	// we came because the user clicked the "Map Data" button
+	button_click = true;
+    } else{
+	stat_code_index = ds.Dimension(stat_index).Category(stat_code).index;
+    }
+
+    var better_main = ds.Dimension(stat_index).Category(stat_code).label; 
+    if(stat_code){
+	main = better_main;
+    }
+    else{
+	console.log("better_main " + better_main)
+    }
     var cube = [];
     $('#drop-downs :selected').each(function(i, selected){
 	cube.push(parseInt(selected.value));
 	if (i !== geoIndex)
 	    labels.push(selected.text);
     });
-
+    if(stat_code_index){
+	cube[stat_index] = stat_code_index;
+    }
+    
     var geo_value = {};
     for(i=0; i<ds.Dimension(geoName).length; ++i){
 	cube[geoIndex] = i;
@@ -1043,8 +577,9 @@ function is_index_geo(){
 }
 function get_set_code(stat_code){
     // take a Statistic code and return the data set
-    var stat_by_set = httpGetJson("json/stat_by_set.json");
+    //var stat_by_set = httpGetJson("json/stat_by_set.json");
     var set_code = stat_by_set[stat_code];
+    console.log("loading set " + set_code);
     var base = "http://www.cso.ie/StatbankServices/StatbankServices.svc/jsonservice/responseinstance/";
     return getjsonStat(base+set_code);
 }
@@ -1056,14 +591,16 @@ function stat_by_time(stat_code){
     // grab a single Statistic out of a dataset
     // return a structure suitiable for during a line chart with
     // a line for each dimension
-    var dataset = get_set_code(stat_code);
-    dataset = dataset.Dataset(0);
+    //console.log("stat_code " + stat_code);
+    //var dataset = get_set_code(stat_code);
+    //console.log("loading set " + dataset);
+    //dataset = dataset.Dataset(0);
 
     // get the index of the Statistic and time 
-    var ids = dataset.id;
+    var ids = ds.id;
     var stat_index = null;
-    var stat = String(dataset.role.metric);
-    var time = String(dataset.role.time);
+    var stat = String(ds.role.metric);
+    var time = String(ds.role.time);
     var time_index = null;
     // max min need to scale the graph
     var max = null;
@@ -1077,9 +614,9 @@ function stat_by_time(stat_code){
 	    time_index = parseInt(i);
 	}
     }
-    var stat_code_index = dataset.Dimension(stat_index).Category(stat_code).index;
-    var stat_label = dataset.Dimension(stat_index).Category(stat_code).label;
-    var stat_base = dataset.Dimension(stat_index).Category(stat_code).unit.Base;
+    var stat_code_index = ds.Dimension(stat_index).Category(stat_code).index;
+    var stat_label = ds.Dimension(stat_index).Category(stat_code).label;
+    var stat_base = ds.Dimension(stat_index).Category(stat_code).unit.Base;
     
     var cube = [];
     for (var j=0; j<ids.length; ++j){
@@ -1090,8 +627,8 @@ function stat_by_time(stat_code){
     var stat_time = {};
     var years = [];
     // get the years
-    for(var j=0; j<dataset.Dimension(time_index).length; ++j){
-	years.push(dataset.Dimension(time_index).Category(j).label);
+    for(var j=0; j<ds.Dimension(time_index).length; ++j){
+	years.push(ds.Dimension(time_index).Category(j).label);
     }
     var data = {};
     stat_time.data = data;
@@ -1106,29 +643,29 @@ function stat_by_time(stat_code){
 	if(i === time_index || i === stat_index)
 	    continue;
 	// for each dimension which is not time or statistic
-	for(var k=0; k<dataset.Dimension(i).length; ++k){
+	for(var k=0; k<ds.Dimension(i).length; ++k){
 	    var current = [];
 	    cube[i] = k;
-	    var current_label = dataset.Dimension(i).Category(k).label;
+	    var current_label = ds.Dimension(i).Category(k).label;
 	    // for each time period of each dimension
-	    for(var j=0; j<dataset.Dimension(time_index).length; ++j){
+	    for(var j=0; j<ds.Dimension(time_index).length; ++j){
 		// create an array for all vars by time
 		cube[time_index] = j;
 		if(max){
-		    if(parseInt(dataset.Data(cube).value) > max){
-			max = parseInt(dataset.Data(cube).value);
+		    if(parseInt(ds.Data(cube).value) > max){
+			max = parseInt(ds.Data(cube).value);
 		    }
 		} else{   
-		    max = parseInt(dataset.Data(cube).value);
+		    max = parseInt(ds.Data(cube).value);
 		}
 		if(min){
-		    if (parseInt(dataset.Data(cube).value) < min){
-			min = parseInt(dataset.Data(cube).value);
+		    if (parseInt(ds.Data(cube).value) < min){
+			min = parseInt(ds.Data(cube).value);
 		    }
 		} else{
-		    min = parseInt(dataset.Data(cube).value);
+		    min = parseInt(ds.Data(cube).value);
 		}
-		current.push(dataset.Data(cube).value);
+		current.push(ds.Data(cube).value);
 	    }
 	    //stat_time[current_label] = current;
 	    stat_time['data'][current_label] = current;
@@ -1270,7 +807,7 @@ function time_stat(json_data){
     // draw each line
     var counter = 0; // used to position the add/remove line "rect"s
     for(key in lines){
-	console.log(lines[key]['label'])
+	//console.log(lines[key]['label'])
 	svg.append("path")
 	    .attr("class", "line")
 	    .attr('id', "line-" + key)

@@ -37,10 +37,10 @@
     <script type="text/javascript">
       make_nav_bar();
       side_by_base();
+      
       $('.click-unit').click( function(){
-         //var stat_by_set = httpGetJson("json/stat_by_set.json");
          load_data(stat_by_set[$(this).attr('id')]);
-         console.log("current set " + stat_by_set[$(this).attr('id')]);
+         //console.log("current set " + stat_by_set[$(this).attr('id')]);
          stat_by_time($(this).attr('id'));
          return false;
       });
