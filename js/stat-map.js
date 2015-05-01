@@ -1,3 +1,4 @@
+//'use strict';
 // stat-map.js a JavaScript's for visualising json-stat data
 // using d3.js
 // copyright David Morrisroe 2015
