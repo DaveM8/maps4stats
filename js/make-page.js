@@ -1,4 +1,7 @@
 // append the nav bar to the page
+// copyright 2015 David Morrisroe
+// GNU Affero General Public License
+
 
 function make_nav(){
     var nav_code = '

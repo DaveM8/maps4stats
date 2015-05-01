@@ -1,6 +1,8 @@
 // stat-map.js a JavaScript's for visualising json-stat data
 // using d3.js
 // copyright David Morrisroe 2015
+// GNU Affero General Public License
+
 
 // used to give an id to each graph we draw
 var graphCounter=0;

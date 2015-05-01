@@ -2,6 +2,8 @@
 
 // global file to prevent loading each time
 // a side bar link is clicked
+// copyright 2015 David Morrisroe
+// GNU Affero General Public License
 
 var stat_by_set = httpGetJson("json/stat_by_set.json");
 var stat_by_label = httpGetJson("json/stat_by_label.json");

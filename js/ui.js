@@ -1,6 +1,8 @@
 // create the ui for maps4stats.com
 // render all the side bars
 // append the nav bar to the page
+// copyright 2015 David Morrisroe
+// GNU Affero General Public License
 
 var nav_code = '<nav class="navbar navbar-fixed-top navbar-inverse">' +
       '<div class="container-fluid">'+
