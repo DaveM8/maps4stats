@@ -13,7 +13,8 @@
    <script type="text/javascript" src="js/json-stat.js"></script>
    <script type="text/javascript" src="js/legend.js"></script>
    <script type="text/javascript" src="js/ui.js"></script>
-
+   <script type="text/javascript" src="js/stat-map.js"></script>
+   <script type="text/javascript" src="js/side_bar.js"></script>
    <script type="text/javascript" src="js/CollapsibleLists.compressed.js"></script>
    <link href="css/style.css" rel="stylesheet" type="text/css"/>
   </head>
@@ -28,12 +29,30 @@
       
     <div>
       <div id="side" class="hidden-print col-xs-6 col-md-3"></div>
-      <div id="drawing" class="col-xs-6 col-md-9">
+      <div id="my-tab" role="tabpanel" class="col-xs-6 col-md-9">
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+	  <li role="presentation" class="active"><a href="#drawing" aria-controls="drawing" role="tab" data-toggle="tab">Graphs</a></li>
+	  <li role="presentation"><a href="#table" aria-controls="table" role="tab" data-toggle="tab">View Data</a></li>
+	  <!--<li role="presentation"><a href="#what" aria-controls="what" role="tab" data-toggle="tab">What?</a></li>-->
+	  <!--<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>-->
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+	  <div role="tabpanel" class="tab-pane active" id="drawing"></div>
+	  <div role="tabpanel" class="tab-pane" id="table"></div>
+	  <!--<div role="tabpanel" class="tab-pane" id="what">...</div>-->
+	  <!--<div role="tabpanel" class="tab-pane" id="settings">...</div>-->
+	</div>
+
+</div>
+      <!--<div id="drawing" class="col-xs-6 col-md-9">-->
 
       </div>
     </div>
-    <script type="text/javascript" src="js/stat-map.js"></script>
-    <script type="text/javascript" src="js/side_bar.js"></script>
+
     <script type="text/javascript">
       make_nav_bar();
       side_by_base();
@@ -42,8 +61,16 @@
          load_data(stat_by_set[$(this).attr('id')]);
          //console.log("current set " + stat_by_set[$(this).attr('id')]);
          stat_by_time($(this).attr('id'));
+         $('#my-tab a:first').tab("show")
          return false;
       });
+      
+      $('#my-tab a[href="#table"]').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+          create_table();
+      })
+      //create_table();
 
    </script>
 </body>

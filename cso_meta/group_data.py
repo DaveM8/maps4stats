@@ -65,7 +65,7 @@ def geo_only(json_obj):
 def stat_by_set(path):
     """
     open all json-stat files in path create a json file 
-    with the statas a key and file name as a value
+    with the stats the key and file name as a value
     and file name as value and stat as key
     """
     stat = defaultdict(str)

@@ -590,12 +590,8 @@ function get_set_code(stat_code){
 function stat_by_time(stat_code){
     // create a json of time series data for each Statistic
     // grab a single Statistic out of a dataset
-    // return a structure suitiable for during a line chart with
+    // return a structure suitiable for drawing a line chart with
     // a line for each dimension
-    //console.log("stat_code " + stat_code);
-    //var dataset = get_set_code(stat_code);
-    //console.log("loading set " + dataset);
-    //dataset = dataset.Dataset(0);
 
     // get the index of the Statistic and time 
     var ids = ds.id;
@@ -703,7 +699,7 @@ function time_stat(json_data){
     //$(currentDiv).append(HTMLgraphTitle.replace("%%main%%", json_data.label));
 
     var margin = {top: 50, right: 200, bottom: 30, left: 30},
-	width = 930 - margin.left - margin.right,
+	width = 900 - margin.left - margin.right,
 	height = 400 - margin.top - margin.bottom;
     // format for monthly cso statistics
     var format = what_format(json_data.time_base);
@@ -882,4 +878,41 @@ function time_stat(json_data){
     });
     $(".data-rect").tooltip();
     //$('[.data-toggle="tooltip"]').tooltip();
+}
+//create_table("CDD01C1");
+//create_table();
+var table_counter = 0;
+function create_table(stat_code){
+    // take a stat code and draw a nice table
+    // try using json-stat.toTable()
+    console.log("Creating Table...")
+    //var stat_by_set = httpGetJson("json/stat_by_set.json");
+    //var set_code = stat_by_set[stat_code];
+    //load_data(set_code);
+    var table = ds.toTable({type: "array"},
+			   function(d, i){
+			       //console.log(d)
+			       if(d.Statistic == stat_code){
+				   return d;
+			       }
+			   }
+			  );
+    // remove previous drawen table
+    $('#table-div').remove();
+    table_counter+=1;
+    var HTMLtableStart = '<div id="table-div" class="table-responsive">'+
+	'<table id="my-table-%%tablenum%%"class="table table-hover">'+
+	'</table></div>'
+    $('#table').append(HTMLtableStart.replace('%%tablenum%%', table_counter));
+    var row_counter = 0;
+    for(var line in table){
+	console.log(table[line])
+	row_counter+=1;
+	$('#my-table-'+table_counter).append('<tr id="row-'+row_counter+ '"></tr>');
+	for(var i=0; i<table[line].length; ++i){
+	    //console.log("cell=" +table[line][cell]);
+	    //console.log("row counter"+row_counter)
+	    $('#row-'+row_counter).append('<td>'+table[[line]][i]+'</td>');
+	}
+    }
 }
